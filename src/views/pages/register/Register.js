@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Axios from 'axios'
 import { Link } from 'react-router-dom'
 import {
@@ -27,6 +27,9 @@ const Register = () => {
 
   //End Point
   const endPoint = process.env.REACT_APP_DEV_URL;
+
+  //State Variables
+  const [registrationData, setRegistrationData] = useState({});
 
   //State variables Storing Data
   const [formData, setFormData] = useState({
@@ -116,7 +119,7 @@ const handleSubmit = (e) => {
 
   //Validation must be TRUE fiest
   if(validateForm()) {
-    Axios.post(endPoint + '/register/', formData)
+    Axios.post(endPoint + '/database/query/register/', formData)
     .then((res) => {
       alert("The Registration is Done!");
     })
@@ -126,6 +129,20 @@ const handleSubmit = (e) => {
   }
 
 }
+
+//Fetching the output
+useEffect(() => {
+  Axios.get(endPoint + 'register/')
+  .then( res => res.data)
+  .then((data) => {
+    setRegistrationData(data);
+    console.log(registrationData);
+  })
+  .catch( error =>  {
+    console.log('Error', error);
+  }, []);
+
+})
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
