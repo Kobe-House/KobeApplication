@@ -23,6 +23,9 @@ import {
   CModalBody,
   CModalHeader,
   CModalTitle,
+  CModalFooter,
+  CFormTextarea,
+  CForm,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -48,6 +51,7 @@ import {
   cilUser,
   cilUserFemale,
   cilPlus,
+  cilTrash,
   cilPen,
 } from '@coreui/icons'
 
@@ -63,15 +67,54 @@ const Scraping = () => {
   const [searchText, setSearchText] = useState('')
   const [scrapedData, setScrapedData] = useState([])
   const [selectedProductIds, setSelectedProductIds] = useState([])
-  const [imageURL, setImageURL] = useState("")
+  const [imageURL, setImageURL] = useState('')
+  const [deleteProduct, setDeleteProduct] = useState('')
   const [imageModalvisible, setImageModalVisible] = useState(false)
+  const [editProductModalVisible, setEditProductModalVisible] = useState(false)
+  const [editedProduct, setEditedProduct] = useState({
+    productId: '',
+    productTitle: '',
+    productDescriptions: [],
+  })
+
+  const openEditModal = (product) => {
+    setEditedProduct({
+      productId: product.productId,
+      productTitle: product.productTitle,
+      productDescriptions: [...product.productDescriptions],
+    })
+    setEditProductModalVisible(true)
+  }
 
   //Image Modal
   const openImageModal = (imageURL) => {
-    setImageURL(imageURL);
-    setImageModalVisible(true);
-  };
-  
+    setImageURL(imageURL)
+    setImageModalVisible(true)
+  }
+
+  //Handle Product Edit
+  const handleEditProduct = () => {
+    //Close the modal
+    setEditProductModalVisible(false)
+
+    //costruct data to send
+    const dataToSend = {
+      productId: editedProduct.productId,
+      productTitle: editedProduct.productTitle,
+      productDescriptions: editedProduct.productDescriptions,
+    }
+
+    Axios.post(DEV_URL + 'scraping/update/', { dataToSend })
+      .then((res) => {
+        if (res.status === 200) {
+          window.location.reload()
+        }
+      })
+      .catch((err) => {
+        console.log(err, 'Error Occured While Updating')
+      })
+  }
+
   //Generate CSV
   const handleSelectProduct = (productId) => {
     if (selectedProductIds.includes(productId)) {
@@ -140,24 +183,93 @@ const Scraping = () => {
   //alert(JSON.stringify(scrapedData))
   return (
     <>
-      {/*Product Image View Modal*/}
+      {/* Modal Product Edit*/}
       <CModal
+        visible={editProductModalVisible}
+        onClose={() => setEditProductModalVisible(false)}
+        aria-labelledby="EditProductModal"
+      >
+        <CModalHeader onClose={() => setEditProductModalVisible(false)}>
+          <CModalTitle id="EditProductModal">Edit Product</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CForm className="row g-3">
+            <CCol xs={12}>
+              <CFormTextarea
+                id="editProductName"
+                label="Product Name"
+                value={editedProduct.productTitle}
+                onChange={(e) =>
+                  setEditedProduct({ ...editedProduct, productTitle: e.target.value })
+                }
+                rows={3}
+              ></CFormTextarea>
+            </CCol>
+            <CCol xs={12}>
+              <CFormTextarea
+                id="editProductDescription"
+                label="Product Description"
+                value={editedProduct.productDescriptions
+                  .map((description) => description.descriptionName)
+                  .join('\n')}
+                onChange={(e) => {
+                  const inputDescriptions = e.target.value.split('\n')
+                  const descriptions = editedProduct.productDescriptions.map(
+                    (description, index) => {
+                      return {
+                        productDescriptionId: description.productDescriptionId,
+                        descriptionName:
+                          index < inputDescriptions.length
+                            ? inputDescriptions[index]
+                            : description.descriptionName,
+                      }
+                    },
+                  )
+
+                  // Check if there are additional lines in the input that don't have corresponding descriptions
+                  if (inputDescriptions.length > descriptions.length) {
+                    for (let i = descriptions.length; i < inputDescriptions.length; i++) {
+                      descriptions.push({
+                        productDescriptionId: '', // Set the productDescriptionId for the new description
+                        descriptionName: inputDescriptions[i],
+                      })
+                    }
+                  }
+
+                  setEditedProduct({ ...editedProduct, productDescriptions: descriptions })
+                }}
+                rows={8}
+              ></CFormTextarea>
+            </CCol>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <CButton
+            style={{ backgroundColor: '#3C4B64', color: 'white' }}
+            onClick={handleEditProduct}
+          >
+            Save changes
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* Modal Product Image View*/}
+      <CModal
+        fullscreen="md"
         visible={imageModalvisible}
         onClose={() => setImageModalVisible(false)}
         aria-labelledby="LiveDemoExampleLabel"
       >
-        <CModalHeader onClose={() => setImageModalVisible(false)}>
-          {/* <CModalTitle id="LiveDemoExampleLabel">Modal title</CModalTitle> */}
-        </CModalHeader>
-        <CModalBody>
-        <img
-            src={imageURL}
-            alt="Image here"
-            style={{
-              width: "250px",
-              height: "300px",
-            }}
-          />
+        <CModalHeader onClose={() => setImageModalVisible(false)}></CModalHeader>
+        <CModalBody
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+          }}
+        >
+          <img src={imageURL} alt="Image here" />
         </CModalBody>
       </CModal>
       <CRow>
@@ -169,18 +281,26 @@ const Scraping = () => {
               </div>
             </CCardHeader>
             <CCardBody>
-
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
                   <CTableRow>
                     {/* <CTableHeaderCell className="text-center">
                       <CIcon icon={cilPeople} />
                     </CTableHeaderCell> */}
+                    <CTableHeaderCell>Action</CTableHeaderCell>
                     <CTableHeaderCell>Source</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Product Title</CTableHeaderCell>
                     <CTableHeaderCell>Product Description</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Image</CTableHeaderCell>
-                    <CTableHeaderCell>Action</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">ASIN</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Manufacturer</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Brand</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Weight</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Dimension</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Model Number</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Special Features</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Color</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Size</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -189,6 +309,20 @@ const Scraping = () => {
                       {/* <CTableDataCell className="text-center">
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell> */}
+                      <CTableDataCell>
+                        <CIcon
+                          icon={cilPen}
+                          size="xl"
+                          style={{ '--ci-primary-color': '#303C54', cursor: 'pointer' }}
+                          onClick={() => openEditModal(item)}
+                        />
+                        <CIcon
+                          icon={cilTrash}
+                          size="xl"
+                          style={{ '--ci-primary-color': 'red', cursor: 'pointer' }}
+                          //onChange = {() => setDeleteProduct(item.productId)}
+                        />
+                      </CTableDataCell>
                       <CTableDataCell>
                         <div>
                           {/* {item.source} */}
@@ -208,7 +342,9 @@ const Scraping = () => {
                           <div className="float-start">
                             <ul>
                               {item.productDescriptions.map((description, descIndex) => (
-                                <li key={descIndex}>{description}</li>
+                                <li key={description.productDescriptionId}>
+                                  {description.descriptionName}
+                                </li>
                               ))}
                             </ul>
                           </div>
@@ -218,24 +354,54 @@ const Scraping = () => {
                         </div>
                         {/* <CProgress thin color={item.usage.color} value={item.usage.value} /> */}
                       </CTableDataCell>
-                      <CTableDataCell className="text-center"  onClick={() => openImageModal(item.imageURL)}>
-                        {/* <CIcon size="xl" icon={} /> */}
+                      <CTableDataCell
+                        className="text-center"
+                        onClick={() => openImageModal(item.imageURL)}
+                      >
                         <img
                           src={item.imageURL}
                           alt=""
                           style={{
                             height: '100px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
                           }}
                         />
                       </CTableDataCell>
-                      <CTableDataCell>
-                        <CFormCheck
-                          id="flexCheckDefault"
-                          label=""
-                          checked={selectedProductIds.includes(item.productId)}
-                          onChange={() => handleSelectProduct(item.productId)}
-                        />
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productAsin} title="" />
+                        {item.productAsin}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productManufacturer} title="" />
+                        {item.productManufacturer}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productBrand} title="" />
+                        {item.productBrand}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productWeight} title="" />
+                        {item.productWeight}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productDimension} title="" />
+                        {item.productDimension}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productModalNumber} title="" />
+                        {item.productModalNumber}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productSpecailFeatures} title="" />
+                        {item.productSpecailFeatures}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productColor} title="" />
+                        {item.productColor}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productSize} title="" />
+                        {item.productSize}
                       </CTableDataCell>
                     </CTableRow>
                   ))}

@@ -23,6 +23,7 @@ import {
   CModalBody,
   CModalHeader,
   CModalTitle,
+  CFormSelect,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -63,16 +64,17 @@ const Scraping = () => {
   const [searchText, setSearchText] = useState('')
   const [scrapedData, setScrapedData] = useState([])
   const [selectedProductIds, setSelectedProductIds] = useState([])
-  const [imageURL, setImageURL] = useState("")
+  const [imageURL, setImageURL] = useState('')
+  const [source, setSource] = useState('')
   const [imageModalvisible, setImageModalVisible] = useState(false)
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0)
 
   //Image Modal
   const openImageModal = (imageURL) => {
-    setImageURL(imageURL);
-    setImageModalVisible(true);
-  };
-  
+    setImageURL(imageURL)
+    setImageModalVisible(true)
+  }
+
   //Generate CSV
   const handleSelectProduct = (productId) => {
     if (selectedProductIds.includes(productId)) {
@@ -96,7 +98,9 @@ const Scraping = () => {
       'Product Title,Image URL,Product Descriptions\n' +
       selectedProducts
         .map((item) => {
-          const descriptions = item.productDescriptions.join('\n')
+          const descriptions = item.productDescriptions
+            .map((desc) => desc.descriptionName)
+            .join('\n')
           return `"${item.productTitle}","${item.imageURL}","${descriptions}"`
         })
         .join('\n')
@@ -121,12 +125,15 @@ const Scraping = () => {
 
   //Send To The Endpoint
   const handleSearching = () => {
-    Axios.post(DEV_URL + 'scraping/add/', { searchText })
+    Axios.post(DEV_URL + 'scraping/add/', {
+      searchText,
+      source,
+    })
       .then((res) => {
-        //console.log(res)
-        if(res.status === 200){
-          window.location.reload();
-        }
+        console.log(res)
+        // if (res.status === 200) {
+        //   window.location.reload()
+        // }
       })
       .catch((err) => {
         console.error(err)
@@ -154,12 +161,12 @@ const Scraping = () => {
           {/* <CModalTitle id="LiveDemoExampleLabel">Modal title</CModalTitle> */}
         </CModalHeader>
         <CModalBody>
-        <img
+          <img
             src={imageURL}
             alt="Image here"
             style={{
-              width: "250px",
-              height: "300px",
+              width: '250px',
+              height: '300px',
             }}
           />
         </CModalBody>
@@ -186,32 +193,16 @@ const Scraping = () => {
                             aria-label="lg input example"
                             onChange={(e) => setSearchText(e.target.value)}
                           />
-                          {/* <div className="input-group-append">
-                            <button
-                              className="btn btn-outline-secondary btn-lg dropdown-toggle"
-                              type="button"
-                              data-toggle="dropdown"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                            >
-                              Source
-                            </button>
-                            <div className="dropdown-menu">
-                              <a className="dropdown-item" href="#">
-                                Action
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Another action
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Something else here
-                              </a>
-                              <div role="separator" className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Separated link
-                              </a>
-                            </div>
-                          </div> */}
+                          <CFormSelect
+                            onChange={(e) => setSource(e.target.value)}
+                            className="input-group-append"
+                            aria-label="Default select example"
+                          >
+                            <option disabled>Select Source</option>
+                            <option value="amazon">Amazon</option>
+                            <option value="walmart">Walmart</option>
+                            <option value="bestbuy">Best Buy</option>
+                          </CFormSelect>
                           <div className="input-group-append">
                             <span className="input-group-text">
                               <CIcon
@@ -241,7 +232,15 @@ const Scraping = () => {
                     <CTableHeaderCell className="text-center">Product Title</CTableHeaderCell>
                     <CTableHeaderCell>Product Description</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Image</CTableHeaderCell>
-                    {/* <CTableHeaderCell>Action</CTableHeaderCell> */}
+                    <CTableHeaderCell className="text-center">ASIN</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Manufacturer</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Brand</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Weight</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Dimension</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Model Number</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Special Features</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Color</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Size</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -251,10 +250,7 @@ const Scraping = () => {
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell> */}
                       <CTableDataCell>
-                        <div>
-                          {/* {item.source} */}
-                          Amazon
-                        </div>
+                        <div>{item.source}</div>
                         {/* <div className="small text-medium-emphasis">
                           <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
                           {item.user.registered}
@@ -269,7 +265,7 @@ const Scraping = () => {
                           <div className="float-start">
                             <ul>
                               {item.productDescriptions.map((description, descIndex) => (
-                                <li key={descIndex}>{description}</li>
+                                <li key={descIndex}>{description.descriptionName}</li>
                               ))}
                             </ul>
                           </div>
@@ -279,16 +275,56 @@ const Scraping = () => {
                         </div>
                         {/* <CProgress thin color={item.usage.color} value={item.usage.value} /> */}
                       </CTableDataCell>
-                      <CTableDataCell className="text-center"  onClick={() => openImageModal(item.imageURL)}>
+                      <CTableDataCell
+                        className="text-center"
+                        onClick={() => openImageModal(item.imageURL)}
+                      >
                         {/* <CIcon size="xl" icon={} /> */}
                         <img
                           src={item.imageURL}
                           alt=""
                           style={{
                             height: '100px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            widht: '100%',
                           }}
                         />
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productAsin} title="" />
+                        {item.productAsin}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productManufacturer} title="" />
+                        {item.productManufacturer}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productBrand} title="" />
+                        {item.productBrand}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productWeight} title="" />
+                        {item.productWeight}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productDimension} title="" />
+                        {item.productDimension}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productModalNumber} title="" />
+                        {item.productModalNumber}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productSpecailFeatures} title="" />
+                        {item.productSpecailFeatures}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productColor} title="" />
+                        {item.productColor}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productSize} title="" />
+                        {item.productSize}
                       </CTableDataCell>
                       {/* <CTableDataCell>
                         <CFormCheck

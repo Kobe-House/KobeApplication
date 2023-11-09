@@ -94,11 +94,13 @@ const Scraping = () => {
 
     // Construct the CSV content
     const csvContent =
-      'Product Title,Image URL,Product Descriptions\n' +
+      'PRODUCT TITLE,IMAGE URLs,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
       selectedProducts
         .map((item) => {
-          const descriptions = item.productDescriptions.join('\n')
-          return `"${item.productTitle}","${item.imageURL}","${descriptions}"`
+          const descriptions = item.productDescriptions
+            .map((description) => description.descriptionName)
+            .join('\n')
+          return `"${item.productTitle}","${item.imageURL}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
         })
         .join('\n')
 
@@ -170,8 +172,11 @@ const Scraping = () => {
                 <h2>GENERATE CSV</h2>
               </div>
 
-              <div class="d-flex flex-row-reverse">
-                <CButton onClick={handleDownloadCSV} style={{ backgroundColor : '#3C4B64', color : 'white'}}>
+              <div className="d-flex flex-row-reverse">
+                <CButton
+                  onClick={handleDownloadCSV}
+                  style={{ backgroundColor: '#3C4B64', color: 'white' }}
+                >
                   {' '}
                   <CIcon icon={cilArrowThickToBottom} /> Download CSV
                 </CButton>
@@ -184,14 +189,20 @@ const Scraping = () => {
                     {/* <CTableHeaderCell className="text-center">
                       <CIcon icon={cilPeople} />
                     </CTableHeaderCell> */}
+                    <CTableHeaderCell>Select</CTableHeaderCell>
                     <CTableHeaderCell>Source</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Product Title</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Product Description</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Image</CTableHeaderCell>
-                    <CTableHeaderCell style={{ display: 'flex', alignItems: 'center' }}>
-                      Select
-                      <span style={{ marginLeft: '5px' }} /> <CIcon icon={cilCheckAlt} />
-                    </CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">ASIN</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Manufacturer</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Brand</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Weight</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Dimension</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Model Number</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Special Features</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Color</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Size</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -200,6 +211,14 @@ const Scraping = () => {
                       {/* <CTableDataCell className="text-center">
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell> */}
+                      <CTableDataCell>
+                        <CFormCheck
+                          id="flexCheckDefault"
+                          label=""
+                          checked={selectedProductIds.includes(item.productId)}
+                          onChange={() => handleSelectProduct(item.productId)}
+                        />
+                      </CTableDataCell>
                       <CTableDataCell>
                         <div>
                           {/* {item.source} */}
@@ -219,7 +238,7 @@ const Scraping = () => {
                           <div className="float-start">
                             <ul>
                               {item.productDescriptions.map((description, descIndex) => (
-                                <li key={descIndex}>{description}</li>
+                                <li key={descIndex}>{description.descriptionName}</li>
                               ))}
                             </ul>
                           </div>
@@ -243,13 +262,41 @@ const Scraping = () => {
                           }}
                         />
                       </CTableDataCell>
-                      <CTableDataCell>
-                        <CFormCheck
-                          id="flexCheckDefault"
-                          label=""
-                          checked={selectedProductIds.includes(item.productId)}
-                          onChange={() => handleSelectProduct(item.productId)}
-                        />
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productAsin} title="" />
+                        {item.productAsin}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productManufacturer} title="" />
+                        {item.productManufacturer}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productBrand} title="" />
+                        {item.productBrand}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productWeight} title="" />
+                        {item.productWeight}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productDimension} title="" />
+                        {item.productDimension}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productModalNumber} title="" />
+                        {item.productModalNumber}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productSpecailFeatures} title="" />
+                        {item.productSpecailFeatures}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productColor} title="" />
+                        {item.productColor}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={item.productSize} title="" />
+                        {item.productSize}
                       </CTableDataCell>
                     </CTableRow>
                   ))}
