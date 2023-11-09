@@ -36,7 +36,7 @@ const _nav = [
     to: '/scraping',
     icon: <CIcon icon={cilApplicationsSettings} customClassName="nav-icon" />,
     badge: {
-      color: 'success',
+      color: 'info',
       text: 'Enter URL',
     },
   },

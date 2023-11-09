@@ -123,8 +123,10 @@ const Scraping = () => {
   const handleSearching = () => {
     Axios.post(DEV_URL + 'scraping/add/', { searchText })
       .then((res) => {
-        console.log(res)
-        
+        //console.log(res)
+        if(res.status === 200){
+          window.location.reload();
+        }
       })
       .catch((err) => {
         console.error(err)
@@ -239,7 +241,7 @@ const Scraping = () => {
                     <CTableHeaderCell className="text-center">Product Title</CTableHeaderCell>
                     <CTableHeaderCell>Product Description</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Image</CTableHeaderCell>
-                    <CTableHeaderCell>Action</CTableHeaderCell>
+                    {/* <CTableHeaderCell>Action</CTableHeaderCell> */}
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -288,14 +290,14 @@ const Scraping = () => {
                           }}
                         />
                       </CTableDataCell>
-                      <CTableDataCell>
+                      {/* <CTableDataCell>
                         <CFormCheck
                           id="flexCheckDefault"
                           label=""
                           checked={selectedProductIds.includes(item.productId)}
                           onChange={() => handleSelectProduct(item.productId)}
                         />
-                      </CTableDataCell>
+                      </CTableDataCell> */}
                     </CTableRow>
                   ))}
                 </CTableBody>
