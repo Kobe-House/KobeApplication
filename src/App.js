@@ -1,6 +1,8 @@
 import React, { Component, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
+import { PrivateRoute } from './ProtectedRoute'
+import { PublicRoute } from './UnprotectedLogin'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -23,11 +25,11 @@ class App extends Component {
       <HashRouter>
         <Suspense fallback={loading}>
           <Routes>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            <Route exact path="/register" name="Register Page" element={<Register />} />
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
-            <Route exact path="/500" name="Page 500" element={<Page500 />} />
-            <Route path="*" name="Home" element={<DefaultLayout />} /> 
+            <Route exact path="/login" name="Login Page" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route exact path="/register" name="Register Page" element={<PublicRoute><Register /></PublicRoute>} />
+            <Route exact path="/404" name="Page 404" element={<PublicRoute><Page404 /></PublicRoute>} />
+            <Route exact path="/500" name="Page 500" element={<PublicRoute><Page500 /></PublicRoute>} />
+            <Route path="*" name="Home" element={<PrivateRoute isAllowed={true}><DefaultLayout /></PrivateRoute>} /> 
             {/* <Route path="*" name="Login Page" element={<Login />} /> */}
           </Routes>
         </Suspense>

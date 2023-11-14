@@ -5,6 +5,7 @@ const Scraping = React.lazy(() => import('./views/scraping/Scraping'))
 const allProduct = React.lazy(() => import('./views/allProducts/List'))
 const generateCsv = React.lazy(() => import('./views/generateCsv/List'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -57,6 +58,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/login', name: 'Login', element: Login },
   { path: '/scraping', name: 'Scraping', element: Scraping },
   { path: '/list', name: 'Scraped Product', element: allProduct },
   { path: '/csv', name: 'Generate CSV', element: generateCsv },

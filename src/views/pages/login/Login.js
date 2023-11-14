@@ -15,9 +15,12 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { useDispatch } from 'react-redux'
+import { handleLogin } from 'src/redux/actions/authAction'
 
 const Login = () => {
   const endPoint = process.env.REACT_APP_DEV_URL;
+  const dispatch = useDispatch();
   
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -48,7 +51,9 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="success" style={{ color: 'white' }} className="px-4">
+                        <CButton onClick={() => {
+                          dispatch(handleLogin("tomamundala", "kigalinziza"));
+                        }} color="success" style={{ color: 'white' }} className="px-4">
                           Login
                         </CButton>
                       </CCol>

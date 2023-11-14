@@ -197,6 +197,7 @@ const Scraping = () => {
                             onChange={(e) => setSource(e.target.value)}
                             className="input-group-append"
                             aria-label="Default select example"
+                            style={{width: '2rem'}}
                           >
                             <option disabled>Select Source</option>
                             <option value="amazon">Amazon</option>
@@ -250,7 +251,7 @@ const Scraping = () => {
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell> */}
                       <CTableDataCell>
-                        <div>{item.source}</div>
+                        <div style={{ textTransform: 'uppercase' }}>{item.source}</div>
                         {/* <div className="small text-medium-emphasis">
                           <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
                           {item.user.registered}

@@ -94,13 +94,13 @@ const Scraping = () => {
 
     // Construct the CSV content
     const csvContent =
-      'PRODUCT TITLE,IMAGE URLs,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
+      'SOURCE,PRODUCT TITLE,IMAGE URLs,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
       selectedProducts
         .map((item) => {
           const descriptions = item.productDescriptions
             .map((description) => description.descriptionName)
             .join('\n')
-          return `"${item.productTitle}","${item.imageURL}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
+          return `"${item.source}","${item.productTitle}","${item.imageURL}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
         })
         .join('\n')
 
@@ -158,8 +158,8 @@ const Scraping = () => {
             src={imageURL}
             alt="Image here"
             style={{
-              width: '250px',
-              height: '300px',
+              width: '100%',
+              height: '100%',
             }}
           />
         </CModalBody>
@@ -173,13 +173,16 @@ const Scraping = () => {
               </div>
 
               <div className="d-flex flex-row-reverse">
-                <CButton
+                {/* <CButton
                   onClick={handleDownloadCSV}
                   style={{ backgroundColor: '#3C4B64', color: 'white' }}
                 >
-                  {' '}
-                  <CIcon icon={cilArrowThickToBottom} /> Download CSV
-                </CButton>
+                  {' '} */}
+                  <CIcon 
+                  icon={cilCloudDownload}
+                  onClick={handleDownloadCSV}
+                   />
+                {/* </CButton> */}
               </div>
             </CCardHeader>
             <CCardBody>
@@ -208,7 +211,7 @@ const Scraping = () => {
                 <CTableBody>
                   {scrapedData.map((item, index) => (
                     <CTableRow v-for="item in tableItems" key={index}>
-                      {/* <CTableDataCell className="text-center">
+                      {/* <CTableDaitem.sourcetaCell className="text-center">
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell> */}
                       <CTableDataCell>
@@ -221,8 +224,7 @@ const Scraping = () => {
                       </CTableDataCell>
                       <CTableDataCell>
                         <div>
-                          {/* {item.source} */}
-                          Amazon
+                           {item.source}
                         </div>
                         {/* <div className="small text-medium-emphasis">
                           <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
@@ -233,10 +235,10 @@ const Scraping = () => {
                         <CIcon size="xl" icon={item.productTitle} title="" />
                         {item.productTitle}
                       </CTableDataCell>
-                      <CTableDataCell>
+                      <CTableDataCell style={{ whiteSpace: 'normal' }}>
                         <div className="clearfix">
                           <div className="float-start">
-                            <ul>
+                            <ul style={{ whiteSpace: 'normal', margin: 0, padding: 0 }}>
                               {item.productDescriptions.map((description, descIndex) => (
                                 <li key={descIndex}>{description.descriptionName}</li>
                               ))}
