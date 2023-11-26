@@ -37,7 +37,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      // alert("CLICKED!");
+      alert('CLICKED!')
 
       let res = await Axios.post(endPoint + 'register/', {
         firstName,

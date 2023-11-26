@@ -1,6 +1,6 @@
 import React from 'react'
 
-//Scraping 
+//Scraping
 const Scraping = React.lazy(() => import('./views/scraping/Scraping'))
 const allProduct = React.lazy(() => import('./views/allProducts/List'))
 const generateCsv = React.lazy(() => import('./views/generateCsv/List'))

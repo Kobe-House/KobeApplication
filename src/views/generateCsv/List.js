@@ -178,10 +178,7 @@ const Scraping = () => {
                   style={{ backgroundColor: '#3C4B64', color: 'white' }}
                 >
                   {' '} */}
-                  <CIcon 
-                  icon={cilCloudDownload}
-                  onClick={handleDownloadCSV}
-                   />
+                <CIcon icon={cilCloudDownload} onClick={handleDownloadCSV} />
                 {/* </CButton> */}
               </div>
             </CCardHeader>
@@ -223,9 +220,7 @@ const Scraping = () => {
                         />
                       </CTableDataCell>
                       <CTableDataCell>
-                        <div>
-                           {item.source}
-                        </div>
+                        <div>{item.source}</div>
                         {/* <div className="small text-medium-emphasis">
                           <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
                           {item.user.registered}

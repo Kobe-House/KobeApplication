@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Axios from 'axios'
 import {
   CAvatar,
@@ -24,6 +24,11 @@ import {
   CModalHeader,
   CModalTitle,
   CFormSelect,
+  CToast,
+  CToastHeader,
+  CToastBody,
+  CToastClose,
+  CToaster,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -58,9 +63,17 @@ import avatar3 from 'src/assets/images/avatars/3.jpg'
 import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
+import { showToast } from '../Toast'
 
 const Scraping = () => {
   const DEV_URL = process.env.REACT_APP_DEV_URL
+
+  //-----Toast------
+  const [toast, addToast] = useState(0)
+  const toaster = useRef()
+  const successToast = showToast('FETCHING... DONE!')
+  const failedToast = showToast('SOME ERROR OCCURED!', 'danger')
+
   const [searchText, setSearchText] = useState('')
   const [scrapedData, setScrapedData] = useState([])
   const [selectedProductIds, setSelectedProductIds] = useState([])
@@ -130,10 +143,13 @@ const Scraping = () => {
       source,
     })
       .then((res) => {
-        console.log(res)
-        // if (res.status === 200) {
-        //   window.location.reload()
-        // }
+        //console.log(res)
+        if (res.status === 200) {
+          addToast(successToast)
+          setTimeout(() => {
+            window.location.reload()
+          }, 1000)
+        }
       })
       .catch((err) => {
         console.error(err)
@@ -151,6 +167,8 @@ const Scraping = () => {
   //alert(JSON.stringify(scrapedData))
   return (
     <>
+      {/*Show Toast*/}
+      <CToaster ref={toaster} push={toast} placement="top-end" />
       {/*Product Image View Modal*/}
       <CModal
         visible={imageModalvisible}
@@ -197,7 +215,7 @@ const Scraping = () => {
                             onChange={(e) => setSource(e.target.value)}
                             className="input-group-append"
                             aria-label="Default select example"
-                            style={{width: '2rem'}}
+                            style={{ width: '2rem' }}
                           >
                             <option disabled>Select Source</option>
                             <option value="amazon">Amazon</option>
