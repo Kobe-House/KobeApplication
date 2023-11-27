@@ -1,13 +1,10 @@
 import { React } from 'react'
 import { CToast, CToastHeader, CToastBody, CToastClose, CToaster } from '@coreui/react'
 
-export const showToast = (message, color = '#3C4B64', autohide = true, delay = 4000) => {
-  const toaststyle = {
-    backrgoundColor: color,
-  }
+export const showToast = (message, color = 'success', autohide = true, delay = 2000) => {
   return (
     <CToast
-      style={toaststyle}
+      color={color}
       className="text-white align-items-center"
       autohide={autohide}
       delay={delay}

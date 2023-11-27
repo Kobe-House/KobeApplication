@@ -119,11 +119,9 @@ const Scraping = () => {
     Axios.get(DEV_URL + 'scraping/get/').then((res) => {
       const data = res.data
       setScrapedData(data)
-      //console.log(JSON.stringify(scrapedData))
     })
   }, [])
 
-  //alert(JSON.stringify(scrapedData))
   return (
     <>
       {/* Modal Product Edit*/}
@@ -209,6 +207,7 @@ const Scraping = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            width: '100%',
             height: '100%',
           }}
         >
@@ -263,7 +262,7 @@ const Scraping = () => {
                         <CIcon
                           icon={cilTrash}
                           size="xl"
-                          style={{ '--ci-primary-color': 'red', cursor: 'pointer' }}
+                          style={{ '--ci-primary-color': '#303C54', cursor: 'pointer' }}
                         //onChange = {() => setDeleteProduct(item.productId)}
                         />
                       </CTableDataCell>

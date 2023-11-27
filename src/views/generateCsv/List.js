@@ -101,7 +101,7 @@ const Scraping = () => {
             .map((description) => description.name)
             .join('\n \n')
 
-          const additionalImages = item.productImages.map((image) => image.url).join('\n \n')
+          const additionalImages = item.productImages.map((image) => image.url).join(', ')
 
           return `"${item.source}","${item.productTitle}","${item.imageURL}","${additionalImages}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
         })
@@ -129,11 +129,9 @@ const Scraping = () => {
     Axios.get(DEV_URL + 'scraping/get/').then((res) => {
       const data = res.data
       setScrapedData(data)
-      //console.log(JSON.stringify(scrapedData))
     })
   }, [])
 
-  //alert(JSON.stringify(scrapedData))
   return (
     <>
       {/*Product Image View Modal*/}
@@ -170,7 +168,7 @@ const Scraping = () => {
                   style={{ backgroundColor: '#3C4B64', color: 'white' }}
                 >
                   {' '} */}
-                <CIcon icon={cilCloudDownload} onClick={handleDownloadCSV} />
+                <CIcon icon={cilCloudDownload} size="xxl" onClick={handleDownloadCSV} />
                 {/* </CButton> */}
               </div>
             </CCardHeader>
@@ -210,6 +208,7 @@ const Scraping = () => {
                           label=""
                           checked={selectedProductIds.includes(item.productId)}
                           onChange={() => handleSelectProduct(item.productId)}
+                          style={{ width: '30px', height: '30px' }}
                         />
                       </CTableDataCell>
                       <CTableDataCell>

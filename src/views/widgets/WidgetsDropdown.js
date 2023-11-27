@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import Axios from 'axios'
 import {
   CRow,
   CCol,
@@ -14,6 +15,27 @@ import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
 
 const WidgetsDropdown = () => {
+  const DEV_URL = process.env.REACT_APP_DEV_URL
+  const [statData, setStatData] = useState({
+    totalProducts: { totalProducts: '0' },
+    totalAmazon: { totalAmazon: '0' },
+    totalWalmart: { totalWalmart: '0' },
+    totalBestBuy: { totalBestbuy: '0' },
+  })
+
+  //---- GEt Statistics ---
+  useEffect(() => {
+    Axios.get(DEV_URL + 'scraping/statistics/').then((res) => {
+      const data = res.data
+
+      try {
+        setStatData(data)
+      } catch (error) {
+        console.error('Error parsing JSON:', error)
+      }
+    })
+  }, [])
+
   return (
     <CRow>
       <CCol sm={6} lg={3}>
@@ -22,13 +44,13 @@ const WidgetsDropdown = () => {
           color="primary"
           value={
             <>
-              26K{' '}
-              <span className="fs-6 fw-normal">
+              {statData.totalProducts && statData.totalProducts.totalProducts}{' '}
+              {/* <span className="fs-6 fw-normal">
                 (-12.4% <CIcon icon={cilArrowBottom} />)
-              </span>
+              </span> */}
             </>
           }
-          title="Users"
+          title="Scraped Products"
           action={
             <CDropdown alignment="end">
               <CDropdownToggle color="transparent" caret={false} className="p-0">
@@ -109,13 +131,13 @@ const WidgetsDropdown = () => {
           color="info"
           value={
             <>
-              $6.200{' '}
-              <span className="fs-6 fw-normal">
+              {statData.totalAmazon && statData.totalAmazon.totalAmazon}{' '}
+              {/* <span className="fs-6 fw-normal">
                 (40.9% <CIcon icon={cilArrowTop} />)
-              </span>
+              </span> */}
             </>
           }
-          title="Income"
+          title="From Amazon"
           action={
             <CDropdown alignment="end">
               <CDropdownToggle color="transparent" caret={false} className="p-0">
@@ -195,13 +217,13 @@ const WidgetsDropdown = () => {
           color="warning"
           value={
             <>
-              2.49{' '}
-              <span className="fs-6 fw-normal">
+              {statData.totalWalmart && statData.totalWalmart.totalWalmart}{' '}
+              {/* <span className="fs-6 fw-normal">
                 (84.7% <CIcon icon={cilArrowTop} />)
-              </span>
+              </span> */}
             </>
           }
-          title="Conversion Rate"
+          title="From Walmart"
           action={
             <CDropdown alignment="end">
               <CDropdownToggle color="transparent" caret={false} className="p-0">
@@ -268,13 +290,13 @@ const WidgetsDropdown = () => {
           color="danger"
           value={
             <>
-              44K{' '}
-              <span className="fs-6 fw-normal">
+              {statData.totalBestBuy && statData.totalBestBuy.totalBestbuy}{' '}
+              {/* <span className="fs-6 fw-normal">
                 (-23.6% <CIcon icon={cilArrowBottom} />)
-              </span>
+              </span> */}
             </>
           }
-          title="Sessions"
+          title="From Best Buy"
           action={
             <CDropdown alignment="end">
               <CDropdownToggle color="transparent" caret={false} className="p-0">

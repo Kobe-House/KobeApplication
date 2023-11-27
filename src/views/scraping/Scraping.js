@@ -71,7 +71,7 @@ const Scraping = () => {
   //-----Toast------
   const [toast, addToast] = useState(0)
   const toaster = useRef()
-  const successToast = showToast('FETCHING... DONE!')
+  const successToast = showToast('FETCHING... DONE!', 'success')
   const failedToast = showToast('SOME ERROR OCCURED!', 'danger')
 
   const [searchText, setSearchText] = useState('')
@@ -100,7 +100,7 @@ const Scraping = () => {
           addToast(successToast)
           setTimeout(() => {
             window.location.reload()
-          }, 1000)
+          }, 4000)
         }
       })
       .catch((err) => {
@@ -113,18 +113,13 @@ const Scraping = () => {
       const data = res.data
 
       try {
-        // Try to parse the JSON string into a JavaScript array
-        //const scrapedDataArray = JSON.parse(data);
         setScrapedData(data)
       } catch (error) {
-        // Log the error and handle it accordingly
         console.error('Error parsing JSON:', error)
-        // You might want to set an appropriate state or show an error message
       }
     })
   }, [])
 
-  //alert(JSON.stringify(scrapedData))
   return (
     <>
       {/*Show Toast*/}
@@ -143,8 +138,8 @@ const Scraping = () => {
             src={imageURL}
             alt="Image here"
             style={{
-              width: '250px',
-              height: '300px',
+              width: '100%',
+              height: '100%',
             }}
           />
         </CModalBody>
