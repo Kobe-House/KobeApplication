@@ -263,7 +263,6 @@ const Scraping = () => {
                           icon={cilTrash}
                           size="xl"
                           style={{ '--ci-primary-color': '#303C54', cursor: 'pointer' }}
-                        //onChange = {() => setDeleteProduct(item.productId)}
                         />
                       </CTableDataCell>
                       <CTableDataCell>
