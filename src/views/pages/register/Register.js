@@ -78,6 +78,8 @@ const Register = () => {
                       <CFormInput
                         onChange={(e) => setFirstName(e.target.value)}
                         value={firstName}
+                        placeholder="First name"
+                        autoComplete="firstname"
                         required
                       />
                     </CInputGroup>
@@ -142,8 +144,7 @@ const Register = () => {
                       <CCol xs={6}>
                         <CButton
                           type="submit"
-                          color="success"
-                          style={{ color: 'white' }}
+                          style={{ color: 'white', backgroundColor: '#303C54' }}
                           className="px-4"
                         >
                           Register
@@ -156,7 +157,10 @@ const Register = () => {
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-success py-5" style={{ width: '34%' }}>
+              <CCard
+                className="text-white py-5"
+                style={{ width: '34%', backgroundColor: '#303C54' }}
+              >
                 <CCardBody className="text-center">
                   <div>
                     <h2>Kobe&apos;s App</h2>

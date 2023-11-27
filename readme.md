@@ -15,7 +15,4 @@ The scraping will be from sites like 'Amazon, Best Buy, and Walmart'
 
 ## Contributing
 
-
 ## License
-
-

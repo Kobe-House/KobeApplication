@@ -80,7 +80,7 @@ const Scraping = () => {
       //product already selected
       setSelectedProductIds(selectedProductIds.filter((id) => id != productId))
     } else {
-      //product ain't selected, so add it
+      //product ain't selected
       setSelectedProductIds([...selectedProductIds, productId])
     }
   }
@@ -94,13 +94,16 @@ const Scraping = () => {
 
     // Construct the CSV content
     const csvContent =
-      'SOURCE,PRODUCT TITLE,IMAGE URLs,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
+      'SOURCE,PRODUCT TITLE,MAIN IMAGE,ADDITIONAL IMAGES,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
       selectedProducts
         .map((item) => {
           const descriptions = item.productDescriptions
-            .map((description) => description.descriptionName)
-            .join('\n')
-          return `"${item.source}","${item.productTitle}","${item.imageURL}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
+            .map((description) => description.name)
+            .join('\n \n')
+
+          const additionalImages = item.productImages.map((image) => image.url).join('\n \n')
+
+          return `"${item.source}","${item.productTitle}","${item.imageURL}","${additionalImages}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
         })
         .join('\n')
 
@@ -120,17 +123,6 @@ const Scraping = () => {
 
     // Clean up by revoking the URL
     URL.revokeObjectURL(url)
-  }
-
-  //Send To The Endpoint
-  const handleSearching = () => {
-    Axios.post(DEV_URL + 'scraping/add/', { searchText })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
   }
 
   useEffect(() => {
@@ -194,6 +186,7 @@ const Scraping = () => {
                     <CTableHeaderCell className="text-center">Product Title</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Product Description</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Image</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Additional Images</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">ASIN</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Manufacturer</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Brand</CTableHeaderCell>
@@ -235,7 +228,7 @@ const Scraping = () => {
                           <div className="float-start">
                             <ul style={{ whiteSpace: 'normal', margin: 0, padding: 0 }}>
                               {item.productDescriptions.map((description, descIndex) => (
-                                <li key={descIndex}>{description.descriptionName}</li>
+                                <li key={description.id}>{description.name}</li>
                               ))}
                             </ul>
                           </div>
@@ -258,6 +251,17 @@ const Scraping = () => {
                             cursor: 'pointer',
                           }}
                         />
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <div className="clearfix">
+                          <div className="float-start">
+                            <ul>
+                              {item.productImages.map((image) => (
+                                <li key={image.id}>{image.url}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CIcon size="xl" icon={item.productAsin} title="" />

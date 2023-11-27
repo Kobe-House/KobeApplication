@@ -115,63 +115,6 @@ const Scraping = () => {
       })
   }
 
-  //Generate CSV
-  const handleSelectProduct = (productId) => {
-    if (selectedProductIds.includes(productId)) {
-      //product already selected
-      setSelectedProductIds(selectedProductIds.filter((id) => id != productId))
-    } else {
-      //product ain't selected, so add it
-      setSelectedProductIds([...selectedProductIds, productId])
-    }
-  }
-
-  // Function to generate and initiate CSV download
-  const handleDownloadCSV = () => {
-    // Filter the selected products from the scrapedData
-    const selectedProducts = scrapedData.filter((item) =>
-      selectedProductIds.includes(item.productId),
-    )
-
-    // Construct the CSV content
-    const csvContent =
-      'Product Title,Image URL,Product Descriptions\n' +
-      selectedProducts
-        .map((item) => {
-          const descriptions = item.productDescriptions.join('\n')
-          return `"${item.productTitle}","${item.imageURL}","${descriptions}"`
-        })
-        .join('\n')
-
-    // Create a Blob containing the CSV data
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-
-    // Create a URL for the Blob
-    const url = URL.createObjectURL(blob)
-
-    // Create an anchor element to trigger the download
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'product_csv.csv'
-
-    // Trigger the download
-    a.click()
-
-    // Clean up by revoking the URL
-    URL.revokeObjectURL(url)
-  }
-
-  //Send To The Endpoint
-  const handleSearching = () => {
-    Axios.post(DEV_URL + 'scraping/add/', { searchText })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-  }
-
   useEffect(() => {
     Axios.get(DEV_URL + 'scraping/get/').then((res) => {
       const data = res.data
@@ -292,6 +235,7 @@ const Scraping = () => {
                     <CTableHeaderCell className="text-center">Product Title</CTableHeaderCell>
                     <CTableHeaderCell>Product Description</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Image</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Additional Images</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">ASIN</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Manufacturer</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Brand</CTableHeaderCell>
@@ -320,7 +264,7 @@ const Scraping = () => {
                           icon={cilTrash}
                           size="xl"
                           style={{ '--ci-primary-color': 'red', cursor: 'pointer' }}
-                          //onChange = {() => setDeleteProduct(item.productId)}
+                        //onChange = {() => setDeleteProduct(item.productId)}
                         />
                       </CTableDataCell>
                       <CTableDataCell>
@@ -342,9 +286,7 @@ const Scraping = () => {
                           <div className="float-start">
                             <ul>
                               {item.productDescriptions.map((description, descIndex) => (
-                                <li key={description.productDescriptionId}>
-                                  {description.descriptionName}
-                                </li>
+                                <li key={description.id}>{description.name}</li>
                               ))}
                             </ul>
                           </div>
@@ -366,6 +308,17 @@ const Scraping = () => {
                             cursor: 'pointer',
                           }}
                         />
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <div className="clearfix">
+                          <div className="float-start">
+                            <ul>
+                              {item.productImages.map((image) => (
+                                <li key={image.id}>{image.url}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CIcon size="xl" icon={item.productAsin} title="" />

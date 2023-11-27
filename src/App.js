@@ -25,11 +25,55 @@ class App extends Component {
       <HashRouter>
         <Suspense fallback={loading}>
           <Routes>
-            <Route exact path="/login" name="Login Page" element={<PublicRoute><Login /></PublicRoute>} />
-            <Route exact path="/register" name="Register Page" element={<PublicRoute><Register /></PublicRoute>} />
-            <Route exact path="/404" name="Page 404" element={<PublicRoute><Page404 /></PublicRoute>} />
-            <Route exact path="/500" name="Page 500" element={<PublicRoute><Page500 /></PublicRoute>} />
-            <Route path="*" name="Home" element={<PrivateRoute isAllowed={true}><DefaultLayout /></PrivateRoute>} /> 
+            <Route
+              exact
+              path="/login"
+              name="Login Page"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+            <Route
+              exact
+              path="/register"
+              name="Register Page"
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              }
+            />
+            <Route
+              exact
+              path="/404"
+              name="Page 404"
+              element={
+                <PublicRoute>
+                  <Page404 />
+                </PublicRoute>
+              }
+            />
+            <Route
+              exact
+              path="/500"
+              name="Page 500"
+              element={
+                <PublicRoute>
+                  <Page500 />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="*"
+              name="Home"
+              element={
+                <PrivateRoute isAllowed={true}>
+                  <DefaultLayout />
+                </PrivateRoute>
+              }
+            />
             {/* <Route path="*" name="Login Page" element={<Login />} /> */}
           </Routes>
         </Suspense>
