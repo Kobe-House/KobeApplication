@@ -99,7 +99,6 @@ const Scraping = () => {
       source,
     })
       .then((res) => {
-        //console.log(res)
         // if (res.status === 200) {
         addToast(successToast)
         //   setTimeout(() => {
