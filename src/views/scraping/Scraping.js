@@ -100,12 +100,12 @@ const Scraping = () => {
     })
       .then((res) => {
         //console.log(res)
-        // if (res.status === 200) {
-        addToast(successToast)
-        //   setTimeout(() => {
-        //     window.location.reload()
-        //   }, 4000)
-        // }
+        if (res.status === 200) {
+          addToast(successToast)
+          setTimeout(() => {
+            window.location.reload()
+          }, 4000)
+        }
       })
       .finally(() => {
         setShowSpinner(false)
