@@ -101,7 +101,7 @@ const Scraping = () => {
       .then((res) => {
         //console.log(res)
         // if (res.status === 200) {
-        //   addToast(successToast)
+        addToast(successToast)
         //   setTimeout(() => {
         //     window.location.reload()
         //   }, 4000)
