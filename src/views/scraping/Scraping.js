@@ -29,6 +29,7 @@ import {
   CToastBody,
   CToastClose,
   CToaster,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -71,7 +72,7 @@ const Scraping = () => {
   //-----Toast------
   const [toast, addToast] = useState(0)
   const toaster = useRef()
-  const successToast = showToast('FETCHING... DONE!', 'success')
+  const successToast = showToast('Completed!...', 'success')
   const failedToast = showToast('SOME ERROR OCCURED!', 'danger')
 
   const [searchText, setSearchText] = useState('')
@@ -80,7 +81,7 @@ const Scraping = () => {
   const [imageURL, setImageURL] = useState('')
   const [source, setSource] = useState('')
   const [imageModalvisible, setImageModalVisible] = useState(false)
-  const [progress, setProgress] = useState(0)
+  const [showSpinner, setShowSpinner] = useState(false)
 
   //Image Modal
   const openImageModal = (imageURL) => {
@@ -90,18 +91,24 @@ const Scraping = () => {
 
   //Send To The Endpoint
   const handleSearching = () => {
+    //start the spinner
+    setShowSpinner(true)
+
     Axios.post(DEV_URL + 'scraping/add/', {
       searchText,
       source,
     })
       .then((res) => {
         //console.log(res)
-        if (res.status === 200) {
-          addToast(successToast)
-          setTimeout(() => {
-            window.location.reload()
-          }, 4000)
-        }
+        // if (res.status === 200) {
+        //   addToast(successToast)
+        //   setTimeout(() => {
+        //     window.location.reload()
+        //   }, 4000)
+        // }
+      })
+      .finally(() => {
+        setShowSpinner(false)
       })
       .catch((err) => {
         console.error(err)
@@ -187,6 +194,18 @@ const Scraping = () => {
                               />
                             </span>
                           </div>
+                          {showSpinner && (
+                            <div className="input-group-append">
+                              <span>
+                                <CSpinner
+                                  color="dark"
+                                  size="sm"
+                                  style={{ width: '3rem', height: '3rem' }}
+                                  className="mx-2 mb-2"
+                                />
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
