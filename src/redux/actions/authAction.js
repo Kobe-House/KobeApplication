@@ -1,24 +1,32 @@
+import React, { useState, useEffect, useRef } from 'react'
+import Axios from 'axios'
+import { Link } from 'react-router-dom'
 import { login } from '../slices/authSlice'
 
-export const handleLogin = (username, passsword) => async (dispatch, getState) => {
+export const handleLogin = (email, password) => async (dispatch, getState) => {
+  //End Point
+  const endPoint = process.env.REACT_APP_DEV_URL
   try {
     const payload = {
-      username,
-      passsword,
+      email,
+      password,
     }
+    Axios.post(endPoint + 'login/', {
+      payload,
+    })
+      .then(function (res) {
+        const token = res.data.token
+        localStorage.setItem('jwtToken', token)
+        const results = {
+          token
+        }
 
-    const token =
-      'xcvjdhjj.sad.asdfsdafertregdgfdghrtghchn.hn.rn.chy6jh6y.hg.yh.y.thyyhtn..yhy.t.cdytcjuvyhjsdgctbuuy4783begfsdjcsdvbuegpjdsbvjhgbdfjlsvbhjlasdbfvjlgbu'
-    const name = 'Tom'
-    const id = 1
-
-    const results = {
-      token,
-      name,
-      id,
-    }
-
-    dispatch(login(results))
+        dispatch(login(results)) // Dispatch inside the 'then' block
+        console.log(token, 'THE TOKEN IS HERE AMIGOS')
+      })
+      .catch(function (err) {
+        console.log('some error occured', err)
+      })
   } catch (error) {
     console.log(error)
   }

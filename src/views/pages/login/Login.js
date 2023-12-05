@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -19,8 +19,9 @@ import { useDispatch } from 'react-redux'
 import { handleLogin } from 'src/redux/actions/authAction'
 
 const Login = () => {
-  const endPoint = process.env.REACT_APP_DEV_URL
   const dispatch = useDispatch()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   return (
     <>
@@ -38,7 +39,12 @@ const Login = () => {
                         <CInputGroupText>
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
-                        <CFormInput placeholder="Username" autoComplete="username" />
+                        <CFormInput
+                          placeholder="Email"
+                          autoComplete="emai"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
                       </CInputGroup>
                       <CInputGroup className="mb-4">
                         <CInputGroupText>
@@ -48,13 +54,15 @@ const Login = () => {
                           type="password"
                           placeholder="Password"
                           autoComplete="current-password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                         />
                       </CInputGroup>
                       <CRow>
                         <CCol xs={6}>
                           <CButton
                             onClick={() => {
-                              dispatch(handleLogin('tomamundala', 'kigalinziza'))
+                              dispatch(handleLogin(email, password))
                             }}
                             style={{ color: 'white', backgroundColor: '#303C54' }}
                             className="px-4"
