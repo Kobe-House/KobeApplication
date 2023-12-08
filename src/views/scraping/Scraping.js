@@ -24,11 +24,6 @@ import {
   CModalHeader,
   CModalTitle,
   CFormSelect,
-  CToast,
-  CToastHeader,
-  CToastBody,
-  CToastClose,
-  CToaster,
   CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -52,10 +47,6 @@ import {
   cilCloudDownload,
   cilPeople,
   cilSearch,
-  cilUser,
-  cilUserFemale,
-  cilPlus,
-  cilPen,
 } from '@coreui/icons'
 
 import avatar1 from 'src/assets/images/avatars/1.jpg'
@@ -64,16 +55,11 @@ import avatar3 from 'src/assets/images/avatars/3.jpg'
 import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
-import { showToast } from '../Toast'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Scraping = () => {
   const DEV_URL = process.env.REACT_APP_DEV_URL
-
-  //-----Toast------
-  const [toast, addToast] = useState(0)
-  const toaster = useRef()
-  const successToast = showToast('Completed!...', 'success')
-  const failedToast = showToast('SOME ERROR OCCURED!', 'danger')
 
   const [searchText, setSearchText] = useState('')
   const [scrapedData, setScrapedData] = useState([])
@@ -99,12 +85,14 @@ const Scraping = () => {
       source,
     })
       .then((res) => {
-        // if (res.status === 200) {
-        addToast(successToast)
-        //   setTimeout(() => {
-        //     window.location.reload()
-        //   }, 4000)
-        // }
+        if (res.status === 200) {
+          toast.success('Scraped Successfully!', {
+            position: toast.POSITION.TOP_RIGHT,
+          })
+
+          // Get Data after success adding
+          fetchData()
+        }
       })
       .finally(() => {
         setShowSpinner(false)
@@ -114,22 +102,27 @@ const Scraping = () => {
       })
   }
 
-  useEffect(() => {
-    Axios.get(DEV_URL + 'scraping/get/').then((res) => {
-      const data = res.data
-
-      try {
+  //F(x) to get data
+  const fetchData = () => {
+    Axios.get(DEV_URL + 'scraping/get/')
+      .then((res) => {
+        const data = res.data
         setScrapedData(data)
-      } catch (error) {
-        console.error('Error parsing JSON:', error)
-      }
-    })
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
+
+  //Get Data at page rendering
+  useEffect(() => {
+    fetchData()
   }, [])
 
   return (
     <>
       {/*Show Toast*/}
-      <CToaster ref={toaster} push={toast} placement="top-end" />
+      <ToastContainer />
       {/*Product Image View Modal*/}
       <CModal
         visible={imageModalvisible}

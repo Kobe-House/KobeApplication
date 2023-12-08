@@ -21,7 +21,7 @@ export const handleLogin = (email, password) => async (dispatch, getState) => {
           token
         }
 
-        dispatch(login(results)) // Dispatch inside the 'then' block
+        dispatch(login(results))
         console.log(token, 'THE TOKEN IS HERE AMIGOS')
       })
       .catch(function (err) {

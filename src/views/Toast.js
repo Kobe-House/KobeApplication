@@ -1,7 +1,7 @@
 import { React } from 'react'
 import { CToast, CToastHeader, CToastBody, CToastClose, CToaster } from '@coreui/react'
 
-export const showToast = (message, color = 'success', autohide = true, delay = 2000) => {
+export const showToast = (message, color = 'dark', autohide = true, delay = 2000) => {
   return (
     <CToast
       color={color}
