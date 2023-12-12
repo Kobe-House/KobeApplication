@@ -18,11 +18,9 @@ export const handleLogin = (email, password) => async (dispatch, getState) => {
         const token = res.data.token
         localStorage.setItem('jwtToken', token)
         const results = {
-          token
+          token,
         }
-
         dispatch(login(results))
-        console.log(token, 'THE TOKEN IS HERE AMIGOS')
       })
       .catch(function (err) {
         console.log('some error occured', err)

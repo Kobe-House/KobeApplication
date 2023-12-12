@@ -7,7 +7,7 @@ export { PrivateRoute }
 
 const PrivateRoute = ({ isAllowed, children }) => {
   const { token } = useSelector((state) => state.auth)
-  console.log(token, 'KKOKOKO')
+  //console.log(token, 'KKOKOKO')
 
   if (!isAllowed) {
     return <Navigate to={'/login'} />

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectToken } from '../../redux/slices/authSlice'
+import { jwtDecode } from 'jwt-decode'
 import {
   CAvatar,
   CButton,
@@ -17,6 +20,11 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
 } from '@coreui/react'
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle, hexToRgba } from '@coreui/utils'
@@ -39,6 +47,8 @@ import {
   cifUs,
   cibTwitter,
   cilCloudDownload,
+  cilXCircle,
+  cilCheckCircle,
   cilPeople,
   cilUser,
   cilUserFemale,
@@ -56,6 +66,101 @@ import WidgetsDropdown from '../widgets/WidgetsDropdown'
 
 const Dashboard = () => {
   const DEV_URL = process.env.REACT_APP_DEV_URL
+  const token = useSelector(selectToken)
+  const [decodedToken, setDecodedToken] = useState(null)
+  const [scrapedData, setScrapedData] = useState([])
+  const [graphData, setGraphData] = useState([])
+  const [showConfirmation, setShowConfirmation] = useState(false)
+
+  const openConfirmation = () => {
+    setShowConfirmation(true)
+  }
+
+  const closeConfirmation = () => {
+    setShowConfirmation(false)
+  }
+
+  //Get Token
+  useEffect(() => {
+    // Decode the JWT token
+    if (token) {
+      const decoded = jwtDecode(token)
+      setDecodedToken(decoded)
+    }
+  }, [token])
+
+  //Access specific fields
+  const level = decodedToken?.level
+  const userName = decodedToken?.userName
+  const email = decodedToken?.email
+  const guid = decodedToken?.guid
+
+  console.log(guid, 'Guid')
+
+  useEffect(() => {
+    Axios.get(DEV_URL + 'scraping/get/', {
+      guid,
+    }).then((res) => {
+      const data = res.data
+      setScrapedData(data)
+    })
+    Axios.get(DEV_URL + 'graph/', {
+      guid,
+    }).then((res) => {
+      const graphPopulate = res.data
+      setGraphData(graphPopulate)
+    })
+  }, [])
+
+  const getCurrentDate = () => {
+    const currentDate = new Date()
+    return currentDate.toISOString().split('T')[0] // Get the date in 'YYYY-MM-DD' format
+  }
+
+  const getCurrentMonth = () => {
+    const currentDate = new Date()
+    return (currentDate.getMonth() + 1).toString() // Month is zero-based, so add 1
+  }
+
+  const getCurrentYear = () => {
+    const currentDate = new Date()
+    return currentDate.getFullYear().toString()
+  }
+
+  const handleDownloadCSV = () => {
+    // Construct the CSV content
+    const csvContent =
+      'SOURCE,PRODUCT TITLE,MAIN IMAGE,ADDITIONAL IMAGES,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
+      scrapedData
+        .map((item) => {
+          const descriptions = item.productDescriptions
+            .map((description) => description.name)
+            .join('\n \n')
+
+          const additionalImages = item.productImages.map((image) => image.url).join(', ')
+
+          return `"${item.source}","${item.productTitle}","${item.imageURL}","${additionalImages}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
+        })
+        .join('\n')
+
+    // Create a Blob containing the CSV data
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob)
+
+    // Create an anchor element to trigger the download
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'product_csv.csv'
+
+    // Trigger the download
+    a.click()
+
+    // Clean up by revoking the URL
+    URL.revokeObjectURL(url)
+    setShowConfirmation(false)
+  }
 
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
@@ -182,6 +287,47 @@ const Dashboard = () => {
 
   return (
     <>
+      {/* Confirmation Modal */}
+      {/* Confirmation Modal */}
+      <CModal
+        visible={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+        aria-labelledby="CSVDownloadConfirmationLabel"
+      >
+        <CModalBody>Download all Scraped Products in the CSV file?</CModalBody>
+        <CModalFooter>
+          <CIcon
+            icon={cilCheckCircle}
+            size="xxl"
+            style={{
+              cursor: 'pointer',
+              color: '#303C54',
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = '#008342'
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = '#303C54'
+            }}
+            onClick={handleDownloadCSV}
+          />
+          <CIcon
+            icon={cilXCircle}
+            size="xxl"
+            style={{
+              cursor: 'pointer',
+              color: '#303C54',
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = '#CF2C1F'
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = '#303C54'
+            }}
+            onClick={() => setShowConfirmation(false)}
+          />
+        </CModalFooter>
+      </CModal>
       <WidgetsDropdown />
       <CCard className="mb-4">
         <CCardBody>
@@ -193,7 +339,11 @@ const Dashboard = () => {
               <div className="small text-medium-emphasis">Sept - Dec 2023</div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
+              <CButton
+                color="primary"
+                className="float-end"
+                onClick={() => setShowConfirmation(true)}
+              >
                 <CIcon icon={cilCloudDownload} />
               </CButton>
               <CButtonGroup className="float-end me-3">
@@ -294,8 +444,69 @@ const Dashboard = () => {
               },
             }}
           />
+          {/* <CChartLine
+            style={{ height: '300px', marginTop: '40px' }}
+            data={{
+              labels: ['Today', 'This Month', 'This Year'],
+              datasets: graphData.map((source) => ({
+                label: source.source,
+                backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
+                borderColor: getStyle('--cui-info'),
+                pointHoverBackgroundColor: getStyle('--cui-info'),
+                borderWidth: 2,
+                data: [
+                  source.dateGroup === getCurrentDate() ? source.totalProducts : 0,
+                  graphData
+                    .filter(
+                      (item) =>
+                        item.monthGroup === getCurrentMonth() &&
+                        item.yearGroup === getCurrentYear(),
+                    )
+                    .reduce((acc, item) => acc + parseInt(item.totalProducts), 0),
+                  graphData
+                    .filter((item) => item.yearGroup === getCurrentYear())
+                    .reduce((acc, item) => acc + parseInt(item.totalProducts), 0),
+                ],
+                fill: true,
+              })),
+            }}
+            options={{
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+              scales: {
+                x: {
+                  grid: {
+                    drawOnChartArea: false,
+                  },
+                },
+                y: {
+                  ticks: {
+                    beginAtZero: true,
+                    maxTicksLimit: 5,
+                    stepSize: Math.ceil(250 / 5),
+                    max: 250,
+                  },
+                },
+              },
+              elements: {
+                line: {
+                  tension: 0.4,
+                },
+                point: {
+                  radius: 0,
+                  hitRadius: 10,
+                  hoverRadius: 4,
+                  hoverBorderWidth: 3,
+                },
+              },
+            }}
+          /> */}
         </CCardBody>
-        <CCardFooter>
+        {/* <CCardFooter>
           <CRow xs={{ cols: 1 }} md={{ cols: 5 }} className="text-center">
             {progressExample.map((item, index) => (
               <CCol className="mb-sm-2 mb-0" key={index}>
@@ -307,7 +518,7 @@ const Dashboard = () => {
               </CCol>
             ))}
           </CRow>
-        </CCardFooter>
+        </CCardFooter> */}
       </CCard>
 
       {/* <CRow>

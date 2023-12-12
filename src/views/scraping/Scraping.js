@@ -1,5 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectToken } from '../../redux/slices/authSlice'
+import { jwtDecode } from 'jwt-decode'
 import {
   CAvatar,
   CButton,
@@ -61,13 +64,36 @@ import 'react-toastify/dist/ReactToastify.css'
 const Scraping = () => {
   const DEV_URL = process.env.REACT_APP_DEV_URL
 
+  const token = useSelector(selectToken)
+  const [decodedToken, setDecodedToken] = useState(null)
   const [searchText, setSearchText] = useState('')
   const [scrapedData, setScrapedData] = useState([])
-  const [selectedProductIds, setSelectedProductIds] = useState([])
   const [imageURL, setImageURL] = useState('')
   const [source, setSource] = useState('')
   const [imageModalvisible, setImageModalVisible] = useState(false)
   const [showSpinner, setShowSpinner] = useState(false)
+
+  //Get Data at page rendering
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  //Get Token
+  useEffect(() => {
+    // Decode the JWT token
+    if (token) {
+      const decoded = jwtDecode(token)
+      setDecodedToken(decoded)
+    }
+  }, [token])
+
+  //Access specific fields
+  const level = decodedToken?.level
+  const userName = decodedToken?.userName
+  const email = decodedToken?.email
+  const guid = decodedToken?.guid
+
+  console.log(guid, 'Guid')
 
   //Image Modal
   const openImageModal = (imageURL) => {
@@ -83,13 +109,13 @@ const Scraping = () => {
     Axios.post(DEV_URL + 'scraping/add/', {
       searchText,
       source,
+      guid,
     })
       .then((res) => {
         if (res.status === 200) {
           toast.success('Scraped Successfully!', {
             position: toast.POSITION.TOP_RIGHT,
           })
-
           // Get Data after success adding
           fetchData()
         }
@@ -104,7 +130,9 @@ const Scraping = () => {
 
   //F(x) to get data
   const fetchData = () => {
-    Axios.get(DEV_URL + 'scraping/get/')
+    Axios.get(DEV_URL + 'scraping/get/', {
+      guid,
+    })
       .then((res) => {
         const data = res.data
         setScrapedData(data)
@@ -113,11 +141,6 @@ const Scraping = () => {
         console.error(err)
       })
   }
-
-  //Get Data at page rendering
-  useEffect(() => {
-    fetchData()
-  }, [])
 
   return (
     <>

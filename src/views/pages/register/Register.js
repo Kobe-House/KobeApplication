@@ -61,15 +61,9 @@ const Register = () => {
 
       if (res.status === 200) {
         if (res.data['Success Registration']) {
-          // addToast(successToast)
-          // setTimeout(() => {
-          alert('Registered!')
           window.location.href = '/#/login/'
-          //window.location.reload()
-          // }, 3000)
         }
         if (res.data['Password Mismatch']) {
-          //setToastMsg("Password mismatch. Please check your passwords");
           alert('Password mismatch. Please check your passwords')
         }
         if (res.data['Email Exist']) {
