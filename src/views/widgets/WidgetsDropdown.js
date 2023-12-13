@@ -38,18 +38,15 @@ const WidgetsDropdown = () => {
     }
   }, [token])
 
-  //Access specific fields
-  const level = decodedToken?.level
-  const userName = decodedToken?.userName
-  const email = decodedToken?.email
-  const guid = decodedToken?.guid
-
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  }
   //---- GEt Statistics ---
   useEffect(() => {
-    Axios.get(DEV_URL + 'scraping/statistics/', {}).then((res) => {
+    Axios.get(DEV_URL + 'scraping/statistics/', {
+      headers: {
+        Accept: 'aplication/json',
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
+    }).then((res) => {
       const data = res.data
       try {
         setStatData(data)
@@ -58,7 +55,7 @@ const WidgetsDropdown = () => {
       }
     })
   }, [])
-
+  console.log(statData)
   return (
     <>
       <CRow>
@@ -68,7 +65,8 @@ const WidgetsDropdown = () => {
             color="primary"
             value={
               <>
-                {statData.totalProducts && statData.totalProducts.totalProducts}{' '}
+                {statData.Statistics && statData.Statistics[0].totalProducts}
+                {''}
                 {/* <span className="fs-6 fw-normal">
                 (-12.4% <CIcon icon={cilArrowBottom} />)
               </span> */}
@@ -155,7 +153,7 @@ const WidgetsDropdown = () => {
             color="info"
             value={
               <>
-                {statData.totalAmazon && statData.totalAmazon.totalAmazon}{' '}
+                {statData.Statistics && statData.Statistics[1].totalAmazon}{' '}
                 {/* <span className="fs-6 fw-normal">
                 (40.9% <CIcon icon={cilArrowTop} />)
               </span> */}
@@ -241,7 +239,7 @@ const WidgetsDropdown = () => {
             color="warning"
             value={
               <>
-                {statData.totalWalmart && statData.totalWalmart.totalWalmart}{' '}
+                {statData.Statistics && statData.Statistics[2].totalWalmart}{' '}
                 {/* <span className="fs-6 fw-normal">
                 (84.7% <CIcon icon={cilArrowTop} />)
               </span> */}
@@ -314,7 +312,7 @@ const WidgetsDropdown = () => {
             color="danger"
             value={
               <>
-                {statData.totalBestBuy && statData.totalBestBuy.totalBestbuy}{' '}
+                {statData.Statistics && statData.Statistics[3].totalBestbuy}{' '}
                 {/* <span className="fs-6 fw-normal">
                 (-23.6% <CIcon icon={cilArrowBottom} />)
               </span> */}

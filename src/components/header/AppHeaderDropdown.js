@@ -39,17 +39,17 @@ const AppHeaderDropdown = () => {
   //Access specific fields
   const level = decodedToken?.level
   const userName = decodedToken?.userName
-  const email = decodedToken?.email
-  const guid = decodedToken?.guid
 
   const dispatch = useDispatch()
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  }
+
   //---- GEt Statistics ---
   useEffect(() => {
-    Axios.get(DEV_URL + 'scraping/statistics/', {
-      guid: guid,
+    Axios.get(DEV_URL + 'scraping/statistics/users/', {
+      headers: {
+        Accept: 'aplication/json',
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
     }).then((res) => {
       const data = res.data
 
@@ -89,13 +89,15 @@ const AppHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem> */}
         <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>
-        <CDropdownItem href="#">
-          <CIcon icon={cilPlus} className="me-2" />
-          Users
-          <CBadge color="success" className="ms-2">
-            {statData.Users && statData.Users.totalUsers}
-          </CBadge>
-        </CDropdownItem>
+        {level == '2' && (
+          <CDropdownItem href="#">
+            <CIcon icon={cilPlus} className="me-2" />
+            Users
+            <CBadge color="success" className="ms-2">
+              {statData.Users && statData.Users.totalUsers}
+            </CBadge>
+          </CDropdownItem>
+        )}
         <CDropdownItem href="#">
           <CIcon icon={cilUser} className="me-2" />
           Profile
