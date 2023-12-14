@@ -24,9 +24,7 @@ const AppHeaderDropdown = () => {
   const DEV_URL = process.env.REACT_APP_DEV_URL
   const token = useSelector(selectToken)
   const [decodedToken, setDecodedToken] = useState(null)
-  const [statData, setStatData] = useState({
-    totalUsers: { Users: '0' },
-  })
+  const [totalUsers, setTotalUsers] = useState('')
   //Get Token
   useEffect(() => {
     // Decode the JWT token
@@ -46,15 +44,13 @@ const AppHeaderDropdown = () => {
   useEffect(() => {
     Axios.get(DEV_URL + 'scraping/statistics/users/', {
       headers: {
-        Accept: 'aplication/json',
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
-        authorization: `Bearer ${token}`,
       },
     }).then((res) => {
       const data = res.data
-
       try {
-        setStatData(data)
+        setTotalUsers(data)
       } catch (error) {
         console.error('Error parsing JSON:', error)
       }
@@ -94,7 +90,7 @@ const AppHeaderDropdown = () => {
             <CIcon icon={cilPlus} className="me-2" />
             Users
             <CBadge color="success" className="ms-2">
-              {statData.Users && statData.Users.totalUsers}
+              {totalUsers && totalUsers.totalUsers}
             </CBadge>
           </CDropdownItem>
         )}

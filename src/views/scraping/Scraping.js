@@ -87,14 +87,6 @@ const Scraping = () => {
     }
   }, [token])
 
-  //Access specific fields
-  const level = decodedToken?.level
-  const userName = decodedToken?.userName
-  const email = decodedToken?.email
-  const guid = decodedToken?.guid
-
-  console.log(guid, 'Guid')
-
   //Image Modal
   const openImageModal = (imageURL) => {
     setImageURL(imageURL)
@@ -106,11 +98,20 @@ const Scraping = () => {
     //start the spinner
     setShowSpinner(true)
 
-    Axios.post(DEV_URL + 'scraping/add/', {
-      searchText,
-      source,
-      guid,
-    })
+    Axios.post(
+      DEV_URL + 'scraping/add/',
+      {
+        searchText,
+        source,
+      },
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
       .then((res) => {
         if (res.status === 200) {
           toast.success('Scraped Successfully!', {
@@ -131,11 +132,17 @@ const Scraping = () => {
   //F(x) to get data
   const fetchData = () => {
     Axios.get(DEV_URL + 'scraping/get/', {
-      guid,
+      headers: {
+        Accept: 'aplication/json',
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => {
         const data = res.data
-        setScrapedData(data)
+        if (Array.isArray(data)) {
+          setScrapedData(data)
+        }
       })
       .catch((err) => {
         console.error(err)
@@ -194,7 +201,7 @@ const Scraping = () => {
                             aria-label="Default select example"
                             style={{ width: '2rem' }}
                           >
-                            <option disabled>Select Source</option>
+                            <option selected>Select Source</option>
                             <option value="amazon">Amazon</option>
                             <option value="walmart">Walmart</option>
                             <option value="bestbuy">Best Buy</option>
@@ -253,30 +260,129 @@ const Scraping = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {scrapedData.map((item, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
+                  {scrapedData.length > 0 ? (
+                    scrapedData.map((item, index) => (
+                      <CTableRow v-for="item in tableItems" key={index}>
+                        {/* <CTableDataCell className="text-center">
+                        <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
+                      </CTableDataCell> */}
+                        <CTableDataCell>
+                          <div style={{ textTransform: 'uppercase' }}>{item.source}</div>
+                          {/* <div className="small text-medium-emphasis">
+                          <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
+                          {item.user.registered}
+                        </div> */}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productTitle} title="" />
+                          {item.productTitle}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          <div className="clearfix">
+                            <div className="float-start">
+                              <ul>
+                                {item.productDescriptions.map((description, descIndex) => (
+                                  <li key={description.id}>{description.name}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            {/* <div className="float-end">
+                            <small className="text-medium-emphasis">{item.usage.period}</small>
+                          </div> */}
+                          </div>
+                          {/* <CProgress thin color={item.usage.color} value={item.usage.value} /> */}
+                        </CTableDataCell>
+                        <CTableDataCell
+                          className="text-center"
+                          onClick={() => openImageModal(item.imageURL)}
+                        >
+                          {/* <CIcon size="xl" icon={} /> */}
+                          <img
+                            src={item.imageURL}
+                            alt=""
+                            style={{
+                              height: '100px',
+                              cursor: 'pointer',
+                              widht: '100%',
+                            }}
+                          />
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          <div className="clearfix">
+                            <div className="float-start">
+                              <ul>
+                                {item.productImages.map((image) => (
+                                  <li key={image.id}>{image.url}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productAsin} title="" />
+                          {item.productAsin}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productManufacturer} title="" />
+                          {item.productManufacturer}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productBrand} title="" />
+                          {item.productBrand}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productWeight} title="" />
+                          {item.productWeight}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productDimension} title="" />
+                          {item.productDimension}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productModalNumber} title="" />
+                          {item.productModalNumber}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productSpecailFeatures} title="" />
+                          {item.productSpecailFeatures}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productColor} title="" />
+                          {item.productColor}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productSize} title="" />
+                          {item.productSize}
+                        </CTableDataCell>
+                        {/* <CTableDataCell>
+                        <CFormCheck
+                          id="flexCheckDefault"
+                          label=""
+                          checked={selectedProductIds.includes(item.productId)}
+                          onChange={() => handleSelectProduct(item.productId)}
+                        />
+                      </CTableDataCell> */}
+                      </CTableRow>
+                    ))
+                  ) : (
+                    <CTableRow v-for="item in tableItems" key={''}>
                       {/* <CTableDataCell className="text-center">
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell> */}
                       <CTableDataCell>
-                        <div style={{ textTransform: 'uppercase' }}>{item.source}</div>
+                        <div style={{ textTransform: 'uppercase' }}>{''}</div>
                         {/* <div className="small text-medium-emphasis">
                           <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
                           {item.user.registered}
                         </div> */}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productTitle} title="" />
-                        {item.productTitle}
+                        <CIcon size="xl" icon={''} title="" />
                       </CTableDataCell>
                       <CTableDataCell>
                         <div className="clearfix">
                           <div className="float-start">
-                            <ul>
-                              {item.productDescriptions.map((description, descIndex) => (
-                                <li key={description.id}>{description.name}</li>
-                              ))}
-                            </ul>
+                            <ul></ul>
                           </div>
                           {/* <div className="float-end">
                             <small className="text-medium-emphasis">{item.usage.period}</small>
@@ -284,67 +390,51 @@ const Scraping = () => {
                         </div>
                         {/* <CProgress thin color={item.usage.color} value={item.usage.value} /> */}
                       </CTableDataCell>
-                      <CTableDataCell
-                        className="text-center"
-                        onClick={() => openImageModal(item.imageURL)}
-                      >
+                      <CTableDataCell className="text-center">
                         {/* <CIcon size="xl" icon={} /> */}
-                        <img
-                          src={item.imageURL}
-                          alt=""
-                          style={{
-                            height: '100px',
-                            cursor: 'pointer',
-                            widht: '100%',
-                          }}
-                        />
                       </CTableDataCell>
                       <CTableDataCell>
                         <div className="clearfix">
                           <div className="float-start">
-                            <ul>
-                              {item.productImages.map((image) => (
-                                <li key={image.id}>{image.url}</li>
-                              ))}
-                            </ul>
+                            <ul></ul>
                           </div>
                         </div>
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productAsin} title="" />
-                        {item.productAsin}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productManufacturer} title="" />
-                        {item.productManufacturer}
+                        <CIcon size="xl" icon={''} title="" />
+                        {'No Products yet....'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productBrand} title="" />
-                        {item.productBrand}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productWeight} title="" />
-                        {item.productWeight}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productDimension} title="" />
-                        {item.productDimension}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productModalNumber} title="" />
-                        {item.productModalNumber}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productSpecailFeatures} title="" />
-                        {item.productSpecailFeatures}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productColor} title="" />
-                        {item.productColor}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.productSize} title="" />
-                        {item.productSize}
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
                       </CTableDataCell>
                       {/* <CTableDataCell>
                         <CFormCheck
@@ -355,7 +445,7 @@ const Scraping = () => {
                         />
                       </CTableDataCell> */}
                     </CTableRow>
-                  ))}
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>

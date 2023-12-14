@@ -55,7 +55,6 @@ const WidgetsDropdown = () => {
       }
     })
   }, [])
-  console.log(statData)
   return (
     <>
       <CRow>
