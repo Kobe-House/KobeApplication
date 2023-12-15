@@ -69,7 +69,6 @@ const Scraping = () => {
   const [searchText, setSearchText] = useState('')
   const [scrapedData, setScrapedData] = useState([])
   const [imageURL, setImageURL] = useState('')
-  const [source, setSource] = useState('')
   const [imageModalvisible, setImageModalVisible] = useState(false)
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -102,7 +101,6 @@ const Scraping = () => {
       DEV_URL + 'scraping/add/',
       {
         searchText,
-        source,
       },
       {
         headers: {
@@ -113,12 +111,14 @@ const Scraping = () => {
       },
     )
       .then((res) => {
-        if (res.status === 200) {
-          toast.success('Scraped Successfully!', {
+        if (res.status === 200 || res.status === 504) {
+          toast.info('Scraped Successfully!', {
             position: toast.POSITION.TOP_RIGHT,
           })
-          // Get Data after success adding
-          fetchData()
+          setTimeout(() => {
+            // Get Data after success adding
+            fetchData()
+          }, 2000)
         }
       })
       .finally(() => {
@@ -195,17 +195,6 @@ const Scraping = () => {
                             aria-label="lg input example"
                             onChange={(e) => setSearchText(e.target.value)}
                           />
-                          <CFormSelect
-                            onChange={(e) => setSource(e.target.value)}
-                            className="input-group-append"
-                            aria-label="Default select example"
-                            style={{ width: '2rem' }}
-                          >
-                            <option selected>Select Source</option>
-                            <option value="amazon">Amazon</option>
-                            <option value="walmart">Walmart</option>
-                            <option value="bestbuy">Best Buy</option>
-                          </CFormSelect>
                           <div className="input-group-append">
                             <span className="input-group-text">
                               <CIcon

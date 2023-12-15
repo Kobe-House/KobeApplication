@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Axios from 'axios'
 import { Link } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import {
   CButton,
   CCard,
@@ -13,11 +15,6 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
-  CToast,
-  CToastHeader,
-  CToastBody,
-  CToastClose,
-  CToaster,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -27,7 +24,6 @@ import {
   cilLockUnlocked,
   cilUserFollow,
 } from '@coreui/icons'
-import { showToast } from 'src/views/Toast'
 
 const Register = () => {
   //End Point
@@ -39,13 +35,6 @@ const Register = () => {
   const [userName, setUserName] = useState('')
   const [passWord, setPassWord] = useState('')
   const [confirmPassWord, setConfirmPassWord] = useState('')
-  let [toastMsg, setToastMsg] = useState('')
-
-  //-----Toast------
-  const [toast, addToast] = useState(0)
-  const toaster = useRef()
-  const successToast = showToast('Registered Successfully', 'success')
-  let failedToast = showToast(toastMsg, 'danger')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -61,26 +50,43 @@ const Register = () => {
 
       if (res.status === 200) {
         if (res.data['Success Registration']) {
-          window.location.href = '/#/login/'
+          toast.success('Thank you for Registering...', {
+            position: toast.POSITION.TOP_RIGHT,
+          })
+          setTimeout(() => {
+            window.location.href = '/#/login/'
+          }, 2000)
         }
         if (res.data['Password Mismatch']) {
-          alert('Password mismatch. Please check your passwords')
+          toast.error('Ooop! Password Mismatch...', {
+            position: toast.POSITION.TOP_RIGHT,
+          })
         }
         if (res.data['Email Exist']) {
-          alert('Email already exists. Please use a different email.')
+          toast.info('Email Already Exist...', {
+            position: toast.POSITION.TOP_RIGHT,
+          })
+        }
+        if (res.data['Valid Email']) {
+          toast.error('Enter a Valid Email...', {
+            position: toast.POSITION.TOP_RIGHT,
+          })
         }
       } else {
-        alert('Registration failed. Please try again.')
+        console.log(res.text)
       }
     } catch (err) {
       console.log('Error:', err)
-      alert('Registration failed. Please try again.')
+      toast.warning('Registration failed. Please try again....', {
+        position: toast.POSITION.TOP_RIGHT,
+      })
     }
   }
 
   return (
     <>
-      <CToaster ref={toaster} push={toast} placement="top-end" />
+      {/*Show Toast*/}
+      <ToastContainer />
       <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
         <CContainer>
           <CRow className="justify-content-center">
