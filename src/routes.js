@@ -2,6 +2,10 @@ import React from 'react'
 
 //Scraping
 const Scraping = React.lazy(() => import('./views/scraping/Scraping'))
+const Users = React.lazy(() => import('./views/users/users'))
+const EditUser = React.lazy(() => import('./views/users/usAbsoDefCoEd'))
+// const User = React.lazy(() => import('./views/users/user'))
+// const Settings = React.lazy(() => import('./views/settings/settings'))
 const allProduct = React.lazy(() => import('./views/allProducts/List'))
 const generateCsv = React.lazy(() => import('./views/generateCsv/List'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
@@ -60,6 +64,11 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/login', name: 'Login', element: Login },
   { path: '/scraping', name: 'Scraping', element: Scraping },
+  { path: '/Users', name: 'List of Users', element: Users },
+  { path: '/usAbsoDefCoEd/:user', name: 'Edit User', element: EditUser },
+  { path: '/usAbsoDefCoEd/', name: 'Edit User', element: EditUser },
+  // { path: '/User', name: 'Edit User', element: User },
+  // { path: '/Settings', name: 'Settings', element: Settings },
   { path: '/list', name: 'Scraped Product', element: allProduct },
   { path: '/csv', name: 'Generate CSV', element: generateCsv },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },

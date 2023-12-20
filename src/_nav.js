@@ -13,9 +13,12 @@ import {
   cilSpeedometer,
   cilStar,
   cilApplicationsSettings,
+  cilTransfer,
   cilBarcode,
   cilFolderOpen,
   cilListRich,
+  cilPeople,
+  cilVerticalAlignBottom,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -34,7 +37,7 @@ const _nav = [
     component: CNavItem,
     name: 'Scrape',
     to: '/scraping',
-    icon: <CIcon icon={cilApplicationsSettings} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilTransfer} customClassName="nav-icon" />,
     badge: {
       color: 'info',
       text: 'Enter URL',
@@ -54,7 +57,13 @@ const _nav = [
     component: CNavItem,
     name: 'Generate CSV',
     to: '/csv',
-    icon: <CIcon icon={cilBarcode} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilVerticalAlignBottom} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Users',
+    to: '/users',
+    icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
   },
   // {
   //   component: CNavTitle,
