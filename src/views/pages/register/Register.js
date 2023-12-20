@@ -189,7 +189,7 @@ const Register = () => {
                 >
                   <CCardBody className="text-center">
                     <div>
-                      <h2>Kobe&apos;s App</h2>
+                      <h2>KOBE APP</h2>
                       <p>{/* Additional information or branding */}</p>
                     </div>
                   </CCardBody>

@@ -21,6 +21,7 @@ import {
   cilVerticalAlignBottom,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import Scraping from '../src/views/scraping/Scraping'
 
 const _nav = [
   {

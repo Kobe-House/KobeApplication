@@ -94,14 +94,14 @@ const AppHeaderDropdown = () => {
             </CBadge>
           </CDropdownItem>
         )}
-        <CDropdownItem href="#">
+        {/* <CDropdownItem href="#">
           <CIcon icon={cilUser} className="me-2" />
           Profile
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilSettings} className="me-2" />
           Settings
-        </CDropdownItem>
+        </CDropdownItem> */}
         {/* <CDropdownItem href="#">
           <CIcon icon={cilCreditCard} className="me-2" />
           Payments

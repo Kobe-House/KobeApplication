@@ -86,7 +86,7 @@ const Login = () => {
                 >
                   <CCardBody className="text-center">
                     <div>
-                      <h2>Kobe&apos;s App</h2>
+                      <h2>KOBE APP</h2>
                       <p>
                         <br></br> SCRAPING<br></br>&<br></br>BULK LISTING
                       </p>

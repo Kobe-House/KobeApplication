@@ -99,7 +99,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     Axios.get(DEV_URL + 'scraping/get/', {
-      guid,
+      headers: {
+        Accept: 'aplication/json',
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
     }).then((res) => {
       const data = res.data
       setScrapedData(data)
