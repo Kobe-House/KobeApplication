@@ -91,6 +91,14 @@ const Scraping = () => {
 
   // Function to generate and initiate CSV download
   const handleDownloadCSV = () => {
+    const cleanText = (text) => {
+      if (text === null || text === undefined) {
+        return ''
+      }
+      // Remove non-printable and non-ASCII characters
+      return text.replace(/[^\x20-\x7E]/g, '')
+    }
+
     // Filter the selected products from the scrapedData
     const selectedProducts = scrapedData.filter((item) =>
       selectedProductIds.includes(item.productId),
@@ -102,12 +110,22 @@ const Scraping = () => {
       selectedProducts
         .map((item) => {
           const descriptions = item.productDescriptions
-            .map((description) => description.name)
+            .map((description) => cleanText(description.name))
             .join('\n \n')
 
-          const additionalImages = item.productImages.map((image) => image.url).join(', ')
+          const additionalImages = item.productImages
+            .map((image) => cleanText(image.url))
+            .join(', ')
 
-          return `"${item.source}","${item.productTitle}","${item.imageURL}","${additionalImages}","${descriptions}","${item.productAsin}","${item.productManufacturer}","${item.productBrand}","${item.productWeight}","${item.productDimension}","${item.productModalNumber}","${item.productSpecailFeatures}","${item.productColor}","${item.productSize}"`
+          return `"${cleanText(item.source)}","${cleanText(item.productTitle)}","${cleanText(
+            item.imageURL,
+          )}","${additionalImages}","${descriptions}","${cleanText(item.productAsin)}","${cleanText(
+            item.productManufacturer,
+          )}","${cleanText(item.productBrand)}","${cleanText(item.productWeight)}","${cleanText(
+            item.productDimension,
+          )}","${cleanText(item.productModalNumber)}","${cleanText(
+            item.productSpecailFeatures,
+          )}","${cleanText(item.productColor)}","${cleanText(item.productSize)}"`
         })
         .join('\n')
 
@@ -184,13 +202,7 @@ const Scraping = () => {
               </div>
 
               <div className="d-flex flex-row-reverse">
-                {/* <CButton
-                  onClick={handleDownloadCSV}
-                  style={{ backgroundColor: '#3C4B64', color: 'white' }}
-                >
-                  {' '} */}
                 <CIcon icon={cilCloudDownload} size="xxl" onClick={handleDownloadCSV} />
-                {/* </CButton> */}
               </div>
             </CCardHeader>
             <CCardBody>
@@ -407,6 +419,11 @@ const Scraping = () => {
                 </CTableBody>
               </CTable>
             </CCardBody>
+            <br />
+            <div className="d-flex justify-content-center">
+              <CIcon icon={cilCloudDownload} size="xxl" onClick={handleDownloadCSV} />
+            </div>
+            <br />
           </CCard>
         </CCol>
       </CRow>

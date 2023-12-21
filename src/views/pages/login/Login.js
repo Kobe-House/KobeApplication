@@ -16,7 +16,7 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import { cilLockUnlocked, cilUser, cilToggleOff, cilToggleOn } from '@coreui/icons'
 import { useDispatch } from 'react-redux'
 import { handleLogin } from 'src/redux/actions/authAction'
 
@@ -24,6 +24,11 @@ const Login = () => {
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
 
   return (
     <>
@@ -51,15 +56,18 @@ const Login = () => {
                       </CInputGroup>
                       <CInputGroup className="mb-4">
                         <CInputGroupText>
-                          <CIcon icon={cilLockLocked} />
+                          <CIcon icon={cilLockUnlocked} />
                         </CInputGroupText>
                         <CFormInput
-                          type="password"
+                          type={showPassword ? 'text' : 'password'}
                           placeholder="Password"
                           autoComplete="current-password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                         />
+                        <CInputGroupText onClick={togglePasswordVisibility}>
+                          <CIcon icon={showPassword ? cilToggleOn : cilToggleOff} />
+                        </CInputGroupText>
                       </CInputGroup>
                       <CRow>
                         <CCol xs={6}>

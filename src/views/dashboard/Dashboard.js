@@ -95,8 +95,6 @@ const Dashboard = () => {
   const email = decodedToken?.email
   const guid = decodedToken?.guid
 
-  console.log(guid, 'Guid')
-
   useEffect(() => {
     Axios.get(DEV_URL + 'scraping/get/', {
       headers: {
@@ -132,21 +130,20 @@ const Dashboard = () => {
   }
 
   const handleDownloadCSV = () => {
-
     const formatNumber = (number) => {
-      if (typeof number === 'number') {
-        return number.toLocaleString(undefined, { maximumFractionDigits: 0 });
+      if (typeof number == 'number') {
+        return number.toLocaleString(undefined, { maximumFractionDigits: 0 })
       }
-      return ''; // Return an empty string for non-numeric values
-    };
+      return ''
+    }
     // Function to clean up text data
     const cleanText = (text) => {
       if (text === null || text === undefined) {
-        return ''; // Return an empty string if text is null or undefined
+        return ''
       }
       // Remove non-printable and non-ASCII characters
-      return text.replace(/[^\x20-\x7E]/g, '');
-    };
+      return text.replace(/[^\x20-\x7E]/g, '')
+    }
 
     // Construct the CSV content
     const csvContent =
@@ -154,49 +151,48 @@ const Dashboard = () => {
       scrapedData
         .map((item) => {
           const descriptions = cleanText(
-            item.productDescriptions?.map((description) => description.name).join('\n\n')
-          );
+            item.productDescriptions?.map((description) => description.name).join('\n\n'),
+          )
 
           const additionalImages = cleanText(
-            item.productImages?.map((image) => image.url).join(', ')
-          );
+            item.productImages?.map((image) => image.url).join(', '),
+          )
 
           // Format numeric values as strings with full format
-          const productAsin = formatNumber(item.productAsin);
-          const productWeight = formatNumber(item.productWeight);
-          const productDimension = formatNumber(item.productDimension);
-          const productModalNumber = formatNumber(item.productModalNumber);
+          // const productAsin = formatNumber(item.productAsin);
+          // const productWeight = formatNumber(item.productWeight);
+          // const productDimension = formatNumber(item.productDimension);
+          // const productModalNumber = formatNumber(item.productModalNumber);
 
           return `"${cleanText(item.source)}","${cleanText(item.productTitle)}","${cleanText(
-            item.imageURL
-          )}","${additionalImages}","${descriptions}","${productAsin}","${cleanText(
-            item.productManufacturer
-          )}","${cleanText(item.productBrand)}","${productWeight}","${productDimension}","${productModalNumber}","${cleanText(
-            item.productSpecailFeatures
-          )}","${cleanText(item.productColor)}","${cleanText(item.productSize)}"`;
+            item.imageURL,
+          )}","${additionalImages}","${descriptions}","${item.productAsin}","${cleanText(
+            item.productManufacturer,
+          )}","${cleanText(item.productBrand)}","${item.productWeight}","${item.productDimension
+            }","${item.productmodalNUmber}","${cleanText(item.productSpecailFeatures)}","${cleanText(
+              item.productColor,
+            )}","${cleanText(item.productSize)}"`
         })
-        .join('\n');
+        .join('\n')
 
     // Create a Blob containing the CSV data
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
 
     // Create a URL for the Blob
-    const url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob)
 
     // Create an anchor element to trigger the download
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'product_csv.csv';
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'product_csv.csv'
 
     // Trigger the download
-    a.click();
+    a.click()
 
     // Clean up by revoking the URL
-    URL.revokeObjectURL(url);
-    setShowConfirmation(false);
-  };
-
-
+    URL.revokeObjectURL(url)
+    setShowConfirmation(false)
+  }
 
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 

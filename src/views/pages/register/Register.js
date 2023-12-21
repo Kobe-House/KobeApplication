@@ -15,13 +15,16 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CListGroupItem,
+  CListGroup,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
   cilLockLocked,
   cilUser,
-  cilEnvelopeClosed,
   cilLockUnlocked,
+  cilToggleOff,
+  cilToggleOn,
   cilUserFollow,
 } from '@coreui/icons'
 
@@ -35,7 +38,17 @@ const Register = () => {
   const [userName, setUserName] = useState('')
   const [passWord, setPassWord] = useState('')
   const [confirmPassWord, setConfirmPassWord] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword2, setShowPassword2] = useState(false)
+  const [invalidPwdMsg, setInvalidPwdMsg] = useState(false)
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
+
+  const togglePasswordVisibility2 = () => {
+    setShowPassword2(!showPassword2)
+  }
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -71,6 +84,12 @@ const Register = () => {
           toast.error('Enter a Valid Email...', {
             position: toast.POSITION.TOP_RIGHT,
           })
+        }
+        if (res.data['InvalidPassword']) {
+          toast.error('Invalid Password Policy', {
+            position: toast.POSITION.TOP_RIGHT,
+          })
+          setInvalidPwdMsg(true)
         }
       } else {
         console.log(res.text)
@@ -122,7 +141,7 @@ const Register = () => {
                       </CInputGroup>
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
-                          <CIcon icon={cilEnvelopeClosed} />
+                          <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
                         <CFormInput
                           placeholder="Email"
@@ -144,27 +163,39 @@ const Register = () => {
                       </CInputGroup>
                       <CInputGroup className="mb-4">
                         <CInputGroupText>
-                          <CIcon icon={cilLockUnlocked} />
+                          <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
                         <CFormInput
-                          type="password"
+                          type={showPassword2 ? 'text' : 'password'}
                           placeholder="Password"
                           autoComplete="new-password"
                           onChange={(e) => setPassWord(e.target.value)}
                           value={passWord}
                         />
+                        <CInputGroupText>
+                          <CIcon
+                            icon={showPassword2 ? cilToggleOn : cilToggleOff}
+                            onClick={togglePasswordVisibility2}
+                          />
+                        </CInputGroupText>
                       </CInputGroup>
                       <CInputGroup className="mb-4">
                         <CInputGroupText>
                           <CIcon icon={cilLockUnlocked} />
                         </CInputGroupText>
                         <CFormInput
-                          type="password"
+                          type={showPassword ? 'text' : 'password'}
                           placeholder="Confirm Password"
                           autoComplete="new-password"
                           onChange={(e) => setConfirmPassWord(e.target.value)}
                           value={confirmPassWord}
                         />
+                        <CInputGroupText>
+                          <CIcon
+                            icon={showPassword ? cilToggleOn : cilToggleOff}
+                            onClick={togglePasswordVisibility}
+                          />
+                        </CInputGroupText>
                       </CInputGroup>
                       <CRow>
                         <CCol xs={6}>
@@ -190,7 +221,43 @@ const Register = () => {
                   <CCardBody className="text-center">
                     <div>
                       <h2>KOBE APP</h2>
-                      <p>{/* Additional information or branding */}</p>
+                      <p>
+                        {invalidPwdMsg && (
+                          <CCard style={{ width: '22rem' }}>
+                            <CListGroup flush>
+                              <CListGroupItem
+                                style={{
+                                  backgroundColor: '#303C54',
+                                  border: 'none',
+                                  color: 'white',
+                                }}
+                              >
+                                Password must at least have:
+                              </CListGroupItem>
+                              <CListGroupItem
+                                style={{ backgroundColor: 'white', color: '#303C54' }}
+                              >
+                                8 characters
+                              </CListGroupItem>
+                              <CListGroupItem
+                                style={{ backgroundColor: 'white', color: '#303C54' }}
+                              >
+                                a special character
+                              </CListGroupItem>
+                              <CListGroupItem
+                                style={{ backgroundColor: 'white', color: '#303C54' }}
+                              >
+                                an uppercase letter
+                              </CListGroupItem>
+                              <CListGroupItem
+                                style={{ backgroundColor: 'white', color: '#303C54' }}
+                              >
+                                a number
+                              </CListGroupItem>
+                            </CListGroup>
+                          </CCard>
+                        )}
+                      </p>
                     </div>
                   </CCardBody>
                 </CCard>
