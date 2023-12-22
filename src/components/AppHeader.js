@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { selectToken } from 'src/redux/slices/authSlice'
+import { jwtDecode } from 'jwt-decode'
 import {
   CContainer,
   CHeader,
@@ -19,9 +21,21 @@ import { AppHeaderDropdown } from './header/index'
 import { logo } from 'src/assets/brand/logo'
 
 const AppHeader = () => {
+  const token = useSelector(selectToken)
+  const [decodedToken, setDecodedToken] = useState(null)
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  //Get Token
+  useEffect(() => {
+    // Decode the JWT token
+    if (token) {
+      const decoded = jwtDecode(token)
+      setDecodedToken(decoded)
+    }
+  }, [token])
 
+  //Access specific fields
+  const level = decodedToken?.level
   return (
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
@@ -40,9 +54,11 @@ const AppHeader = () => {
               Dashboard
             </CNavLink>
           </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
-          </CNavItem>
+          {level == '2' && (
+            <CNavItem>
+              <CNavLink href="#">User</CNavLink>
+            </CNavItem>
+          )}
           <CNavItem>
             <CNavLink href="#">Settings</CNavLink>
           </CNavItem>

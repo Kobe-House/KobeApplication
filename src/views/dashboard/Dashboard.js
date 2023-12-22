@@ -150,28 +150,28 @@ const Dashboard = () => {
       'SOURCE,PRODUCT TITLE,MAIN IMAGE,ADDITIONAL IMAGES,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
       scrapedData
         .map((item) => {
-          const descriptions = cleanText(
-            item.productDescriptions?.map((description) => description.name).join('\n\n'),
-          )
+          const descriptions = item.productDescriptions
+            ?.map((description) => cleanText(description.name))
+            .join('\n\n')
 
-          const additionalImages = cleanText(
-            item.productImages?.map((image) => image.url).join(', '),
-          )
+          const additionalImages = item.productImages
+            ?.map((image) => cleanText(image.url))
+            .join(', ')
 
           // Format numeric values as strings with full format
           // const productAsin = formatNumber(item.productAsin);
           // const productWeight = formatNumber(item.productWeight);
           // const productDimension = formatNumber(item.productDimension);
           // const productModalNumber = formatNumber(item.productModalNumber);
-
           return `"${cleanText(item.source)}","${cleanText(item.productTitle)}","${cleanText(
             item.imageURL,
-          )}","${additionalImages}","${descriptions}","${item.productAsin}","${cleanText(
+          )}","${additionalImages}","${descriptions}","${cleanText(item.productAsin)}","${cleanText(
             item.productManufacturer,
-          )}","${cleanText(item.productBrand)}","${item.productWeight}","${item.productDimension
-            }","${item.productmodalNUmber}","${cleanText(item.productSpecailFeatures)}","${cleanText(
-              item.productColor,
-            )}","${cleanText(item.productSize)}"`
+          )}","${cleanText(item.productBrand)}","${cleanText(item.productWeight)}","${cleanText(
+            item.productDimension,
+          )}","${cleanText(item.productModalNumber)}","${cleanText(
+            item.productSpecailFeatures,
+          )}","${cleanText(item.productColor)}","${cleanText(item.productSize)}"`
         })
         .join('\n')
 
