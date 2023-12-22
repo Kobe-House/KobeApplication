@@ -56,7 +56,7 @@ const AppHeader = () => {
           </CNavItem>
           {level == '2' && (
             <CNavItem>
-              <CNavLink href="#">User</CNavLink>
+              <CNavLink href="#">Users</CNavLink>
             </CNavItem>
           )}
           <CNavItem>
