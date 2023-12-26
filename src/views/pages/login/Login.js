@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {
@@ -16,7 +18,13 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockUnlocked, cilUser, cilToggleOff, cilToggleOn } from '@coreui/icons'
+import {
+  cilLockUnlocked,
+  cilUser,
+  cilToggleOff,
+  cilToggleOn,
+  cilEnvelopeClosed,
+} from '@coreui/icons'
 import { useDispatch } from 'react-redux'
 import { handleLogin } from 'src/redux/actions/authAction'
 
@@ -25,11 +33,17 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [hasInput, setHasInput] = useState(false)
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
   }
-
+  //----- Check Whent o Show PWD -----
+  const handlePwdChange = (e) => {
+    const inputValue = e.target.value
+    setPassword(inputValue)
+    setHasInput(inputValue.length > 0)
+  }
   return (
     <>
       <ToastContainer />
@@ -45,7 +59,7 @@ const Login = () => {
                       <p className="text-medium-emphasis">Sign In to your account</p>
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
-                          <CIcon icon={cilUser} />
+                          <CIcon icon={cilEnvelopeClosed} />
                         </CInputGroupText>
                         <CFormInput
                           placeholder="Email"
@@ -63,11 +77,16 @@ const Login = () => {
                           placeholder="Password"
                           autoComplete="current-password"
                           value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          onChange={handlePwdChange}
                         />
-                        <CInputGroupText onClick={togglePasswordVisibility}>
-                          <CIcon icon={showPassword ? cilToggleOn : cilToggleOff} />
-                        </CInputGroupText>
+                        {hasInput && (
+                          <CInputGroupText>
+                            <FontAwesomeIcon
+                              onClick={togglePasswordVisibility}
+                              icon={showPassword ? faEyeSlash : faEye}
+                            />
+                          </CInputGroupText>
+                        )}
                       </CInputGroup>
                       <CRow>
                         <CCol xs={6}>

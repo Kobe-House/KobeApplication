@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import Axios from 'axios'
 import { Link } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
@@ -21,6 +23,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import {
   cilLockLocked,
+  cilEnvelopeClosed,
   cilUser,
   cilLockUnlocked,
   cilToggleOff,
@@ -41,6 +44,9 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showPassword2, setShowPassword2] = useState(false)
   const [invalidPwdMsg, setInvalidPwdMsg] = useState(false)
+  const [hasInput, setHasInput] = useState(false)
+  const [hasInput2, setHasInput2] = useState(false)
+  const [msg, setMsg] = useState([])
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -48,6 +54,17 @@ const Register = () => {
 
   const togglePasswordVisibility2 = () => {
     setShowPassword2(!showPassword2)
+  }
+  //----- Check Whent o Show PWD -----
+  const handlePwdConfirmChange = (e) => {
+    const inputValue = e.target.value
+    setConfirmPassWord(inputValue)
+    setHasInput(inputValue.length > 0)
+  }
+  const handlePwdChange = (e) => {
+    const inputValue = e.target.value
+    setPassWord(inputValue)
+    setHasInput2(inputValue.length > 0)
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -89,7 +106,10 @@ const Register = () => {
           toast.error('Invalid Password Policy', {
             position: toast.POSITION.TOP_RIGHT,
           })
+          console.log(res.data['InvalidPassword'], 'INVALID HERE')
           setInvalidPwdMsg(true)
+          setMsg(res.data['InvalidPassword'])
+          console.log(msg, 'Actual Mesage')
         }
       } else {
         console.log(res.text)
@@ -141,7 +161,7 @@ const Register = () => {
                       </CInputGroup>
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
-                          <CIcon icon={cilLockLocked} />
+                          <CIcon icon={cilEnvelopeClosed} />
                         </CInputGroupText>
                         <CFormInput
                           placeholder="Email"
@@ -169,33 +189,37 @@ const Register = () => {
                           type={showPassword2 ? 'text' : 'password'}
                           placeholder="Password"
                           autoComplete="new-password"
-                          onChange={(e) => setPassWord(e.target.value)}
+                          onChange={handlePwdChange}
                           value={passWord}
                         />
-                        <CInputGroupText>
-                          <CIcon
-                            icon={showPassword2 ? cilToggleOn : cilToggleOff}
-                            onClick={togglePasswordVisibility2}
-                          />
-                        </CInputGroupText>
+                        {hasInput2 && (
+                          <CInputGroupText>
+                            <FontAwesomeIcon
+                              icon={showPassword2 ? faEyeSlash : faEye}
+                              onClick={togglePasswordVisibility2}
+                            />
+                          </CInputGroupText>
+                        )}
                       </CInputGroup>
                       <CInputGroup className="mb-4">
                         <CInputGroupText>
-                          <CIcon icon={cilLockUnlocked} />
+                          <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
                         <CFormInput
                           type={showPassword ? 'text' : 'password'}
                           placeholder="Confirm Password"
                           autoComplete="new-password"
-                          onChange={(e) => setConfirmPassWord(e.target.value)}
+                          onChange={handlePwdConfirmChange}
                           value={confirmPassWord}
                         />
-                        <CInputGroupText>
-                          <CIcon
-                            icon={showPassword ? cilToggleOn : cilToggleOff}
-                            onClick={togglePasswordVisibility}
-                          />
-                        </CInputGroupText>
+                        {hasInput && (
+                          <CInputGroupText>
+                            <FontAwesomeIcon
+                              icon={showPassword ? faEyeSlash : faEye}
+                              onClick={togglePasswordVisibility}
+                            />
+                          </CInputGroupText>
+                        )}
                       </CInputGroup>
                       <CRow>
                         <CCol xs={6}>
@@ -232,28 +256,16 @@ const Register = () => {
                                   color: 'white',
                                 }}
                               >
-                                Password must at least have:
+                                Password Policy:
                               </CListGroupItem>
-                              <CListGroupItem
-                                style={{ backgroundColor: 'white', color: '#303C54' }}
-                              >
-                                8 characters
-                              </CListGroupItem>
-                              <CListGroupItem
-                                style={{ backgroundColor: 'white', color: '#303C54' }}
-                              >
-                                a special character
-                              </CListGroupItem>
-                              <CListGroupItem
-                                style={{ backgroundColor: 'white', color: '#303C54' }}
-                              >
-                                an uppercase letter
-                              </CListGroupItem>
-                              <CListGroupItem
-                                style={{ backgroundColor: 'white', color: '#303C54' }}
-                              >
-                                a number
-                              </CListGroupItem>
+                              {msg.map((message, index) => (
+                                <CListGroupItem
+                                  style={{ backgroundColor: 'white', color: '#303C54' }}
+                                  key={index}
+                                >
+                                  {message}
+                                </CListGroupItem>
+                              ))}
                             </CListGroup>
                           </CCard>
                         )}
