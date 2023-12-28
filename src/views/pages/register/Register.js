@@ -109,7 +109,6 @@ const Register = () => {
           console.log(res.data['InvalidPassword'], 'INVALID HERE')
           setInvalidPwdMsg(true)
           setMsg(res.data['InvalidPassword'])
-          console.log(msg, 'Actual Mesage')
         }
       } else {
         console.log(res.text)

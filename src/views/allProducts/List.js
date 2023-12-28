@@ -261,9 +261,14 @@ const Scraping = () => {
                     <CTableHeaderCell className="text-center">Weight</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Dimension</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Model Number</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Model Year</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Special Features</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Color</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Size</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">
+                      Date First Available
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Battery Required</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -364,6 +369,10 @@ const Scraping = () => {
                           {item.productModalNumber}
                         </CTableDataCell>
                         <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productModelYear} title="" />
+                          {item.productModelYear}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
                           <CIcon size="xl" icon={item.productSpecailFeatures} title="" />
                           {item.productSpecailFeatures}
                         </CTableDataCell>
@@ -374,6 +383,14 @@ const Scraping = () => {
                         <CTableDataCell className="text-center">
                           <CIcon size="xl" icon={item.productSize} title="" />
                           {item.productSize}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" title="" />
+                          {item.productDateFirstAvailable}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" title="" />
+                          {item.productBatteryRequired}
                         </CTableDataCell>
                       </CTableRow>
                     ))
@@ -447,6 +464,18 @@ const Scraping = () => {
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CIcon size="xl" icon={''} title="" />
+                        {''}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" title="" />
+                        {''}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" title="" />
                         {''}
                       </CTableDataCell>
                       {/* <CTableDataCell>

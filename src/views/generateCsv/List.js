@@ -91,6 +91,18 @@ const Scraping = () => {
 
   // Function to generate and initiate CSV download
   const handleDownloadCSV = () => {
+    //----- Including " " Qoutes ----
+    const escapeCSVField = (text) => {
+      if (text === null || text === undefined) {
+        return ''
+      }
+      if (text.includes('"')) {
+        return `${text.replace(/"/g, '""')}"`
+      }
+      return text
+    }
+
+    //----- Cleaning Other Stuff -----
     const cleanText = (text) => {
       if (text === null || text === undefined) {
         return ''
@@ -106,26 +118,30 @@ const Scraping = () => {
 
     // Construct the CSV content
     const csvContent =
-      'SOURCE,PRODUCT TITLE,MAIN IMAGE,ADDITIONAL IMAGES,PRODCUT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,SPECIAL FEATURES,COLOR,SIZE\n' +
+      'SOURCE,PRODUCT TITLE,MAIN IMAGE,ADDITIONAL IMAGES,PRODUCT DESCRIPTION,ASIN,MANUFACTURER,BRAND,ITEM WEIGHT,ITEM DIMENSION,ITEM MODEL NUMBER,MODEL YEAR,SPECIAL FEATURES,COLOR,SIZE,DATE FIRST AVAILABLE,BATTERY REQUIRED\n' +
       selectedProducts
         .map((item) => {
           const descriptions = item.productDescriptions
-            .map((description) => cleanText(description.name))
+            .map((description) => escapeCSVField(cleanText(description.name)))
             .join('\n \n')
 
           const additionalImages = item.productImages
-            .map((image) => cleanText(image.url))
-            .join(', ')
+            .map((image) => escapeCSVField(cleanText(image.url)))
+            .join('\n \n')
 
-          return `"${cleanText(item.source)}","${cleanText(item.productTitle)}","${cleanText(
-            item.imageURL,
-          )}","${additionalImages}","${descriptions}","${cleanText(item.productAsin)}","${cleanText(
-            item.productManufacturer,
-          )}","${cleanText(item.productBrand)}","${cleanText(item.productWeight)}","${cleanText(
-            item.productDimension,
-          )}","${cleanText(item.productModalNumber)}","${cleanText(
+          return `"${cleanText(item.source)}","${escapeCSVField(
+            cleanText(item.productTitle),
+          )}","${cleanText(item.imageURL)}","${additionalImages}","${descriptions}","${cleanText(
+            item.productAsin,
+          )}","${cleanText(item.productManufacturer)}","${cleanText(
+            item.productBrand,
+          )}","${cleanText(item.productWeight)}","${cleanText(item.productDimension)}","${cleanText(
+            item.productModalNumber,
+          )}","${cleanText(item.productModelYear)}","${cleanText(
             item.productSpecailFeatures,
-          )}","${cleanText(item.productColor)}","${cleanText(item.productSize)}"`
+          )}","${cleanText(item.productColor)}","${cleanText(item.productSize)}","${cleanText(
+            item.productDateFirstAvailable,
+          )}","${cleanText(item.productBatteryRequired)}"`
         })
         .join('\n')
 
@@ -224,9 +240,14 @@ const Scraping = () => {
                     <CTableHeaderCell className="text-center">Weight</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Dimension</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Model Number</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Model Year</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Special Features</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Color</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Size</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">
+                      Date First Available
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Battery Required</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -321,6 +342,10 @@ const Scraping = () => {
                           {item.productModalNumber}
                         </CTableDataCell>
                         <CTableDataCell className="text-center">
+                          <CIcon size="xl" icon={item.productModelYear} title="" />
+                          {item.productModelYear}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
                           <CIcon size="xl" icon={item.productSpecailFeatures} title="" />
                           {item.productSpecailFeatures}
                         </CTableDataCell>
@@ -331,6 +356,14 @@ const Scraping = () => {
                         <CTableDataCell className="text-center">
                           <CIcon size="xl" icon={item.productSize} title="" />
                           {item.productSize}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" title="" />
+                          {item.productDateFirstAvailable}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <CIcon size="xl" title="" />
+                          {item.productBatteryRequired}
                         </CTableDataCell>
                       </CTableRow>
                     ))
@@ -404,6 +437,18 @@ const Scraping = () => {
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CIcon size="xl" icon={''} title="" />
+                        {''}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" icon={''} title="" />
+                        {''}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" title="" />
+                        {''}
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CIcon size="xl" title="" />
                         {''}
                       </CTableDataCell>
                       {/* <CTableDataCell>
