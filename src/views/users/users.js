@@ -6,6 +6,10 @@ import { useSelector } from 'react-redux'
 import { selectToken } from '../../redux/slices/authSlice'
 import { jwtDecode } from 'jwt-decode'
 import {
+  CDropdown,
+  CDropdownMenu,
+  CDropdownItem,
+  CDropdownToggle,
   CAvatar,
   CButton,
   CButtonGroup,
@@ -53,6 +57,7 @@ import {
   cibTwitter,
   cilCloudDownload,
   cilPeople,
+  cilOptions,
   cilSearch,
 } from '@coreui/icons'
 
@@ -123,6 +128,9 @@ const Users = () => {
     getAllUsers()
     getSingleUsers()
   }, [])
+  const customCSSVariables = {
+    '--cui-dropdown-link-active-color': 'dark',
+  }
 
   return (
     <>
@@ -221,24 +229,33 @@ const Users = () => {
                           {item.created_at}
                         </CTableDataCell>
                         <CTableDataCell className="text-center">
-                          <span>
-                            <Icon
-                              onClick={() => {
-                                setVisible(!visible)
-                                getSingleUsers(item.user_guid)
-                              }}
-                              icon="mdi:account-eye-outline"
-                              style={{ fontSize: '24px', color: '#4f5d73' }}
-                            />
-                          </span>
-                          <Link to={`/usAbsoDefCoEd/${item.user_guid}`}>
-                            <span>
-                              <Icon
-                                icon="mdi:account-edit-outline"
-                                style={{ fontSize: '24px', color: '#f9b115' }}
-                              />
-                            </span>
-                          </Link>
+                          <CDropdown alignment="end" style={customCSSVariables}>
+                            <CDropdownToggle color="dark" caret={false} className="p-0">
+                              <CIcon icon={cilOptions} className="text-high-emphasis-inverse" />
+                            </CDropdownToggle>
+                            <CDropdownMenu>
+                              <CDropdownItem className="text-center">
+                                <Icon
+                                  onClick={() => {
+                                    setVisible(!visible)
+                                    getSingleUsers(item.user_guid)
+                                  }}
+                                  icon="mdi:account-eye-outline"
+                                  style={{ fontSize: '24px', color: '#f9b115' }}
+                                />
+                              </CDropdownItem>
+                              <CDropdownItem className="text-center">
+                                <Link to={`/usAbsoDefCoEd/${item.user_guid}`}>
+                                  <span>
+                                    <Icon
+                                      icon="mdi:account-edit-outline"
+                                      style={{ fontSize: '24px', color: '#f9b115' }}
+                                    />
+                                  </span>
+                                </Link>
+                              </CDropdownItem>
+                            </CDropdownMenu>
+                          </CDropdown>
                           {/* <Link to={`/usAbsoDefCoEd/${item.user_guid}`}>
                                                         <span>
                                                             <Icon

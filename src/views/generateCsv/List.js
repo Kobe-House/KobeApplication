@@ -62,6 +62,7 @@ import avatar3 from 'src/assets/images/avatars/3.jpg'
 import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
+import { Link } from 'react-router-dom'
 
 const Scraping = () => {
   const DEV_URL = process.env.REACT_APP_DEV_URL
@@ -253,7 +254,12 @@ const Scraping = () => {
                 <CTableBody>
                   {scrapedData.length > 0 ? (
                     scrapedData.map((item, index) => (
-                      <CTableRow v-for="item in tableItems" key={index}>
+                      <CTableRow
+                        v-for="item in tableItems"
+                        onClick={() => handleSelectProduct(item.productId)}
+                        key={index}
+                        style={{ cursor: 'pointer' }}
+                      >
                         {/* <CTableDaitem.sourcetaCell className="text-center">
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell> */}

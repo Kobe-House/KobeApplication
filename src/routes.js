@@ -10,6 +10,7 @@ const allProduct = React.lazy(() => import('./views/allProducts/List'))
 const generateCsv = React.lazy(() => import('./views/generateCsv/List'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
+const Landing = React.lazy(() => import('./views/pages/landing/Landing'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -62,6 +63,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/landing', name: 'Landing', element: Landing },
   { path: '/login', name: 'Login', element: Login },
   { path: '/scraping', name: 'Scraping', element: Scraping },
   { path: '/Users', name: 'List of Users', element: Users },

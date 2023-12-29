@@ -130,11 +130,15 @@ const Dashboard = () => {
   }
 
   const handleDownloadCSV = () => {
-    const formatNumber = (number) => {
-      if (typeof number == 'number') {
-        return number.toLocaleString(undefined, { maximumFractionDigits: 0 })
+    //----- Including " " Qoutes ----
+    const escapeCSVField = (text) => {
+      if (text === null || text === undefined) {
+        return ''
       }
-      return ''
+      if (text.includes('"')) {
+        return `${text.replace(/"/g, '""')}"`
+      }
+      return text
     }
     // Function to clean up text data
     const cleanText = (text) => {
@@ -151,27 +155,24 @@ const Dashboard = () => {
       scrapedData
         .map((item) => {
           const descriptions = item.productDescriptions
-            ?.map((description) => cleanText(description.name))
+            ?.map((description) => escapeCSVField(cleanText(description.name)))
             .join('\n\n')
 
           const additionalImages = item.productImages
-            ?.map((image) => cleanText(image.url))
+            ?.map((image) => escapeCSVField(cleanText(image.url)))
             .join(', ')
 
-          // Format numeric values as strings with full format
-          // const productAsin = formatNumber(item.productAsin);
-          // const productWeight = formatNumber(item.productWeight);
-          // const productDimension = formatNumber(item.productDimension);
-          // const productModalNumber = formatNumber(item.productModalNumber);
-          return `"${cleanText(item.source)}","${cleanText(item.productTitle)}","${cleanText(
-            item.imageURL,
-          )}","${additionalImages}","${descriptions}","${cleanText(item.productAsin)}","${cleanText(
-            item.productManufacturer,
-          )}","${cleanText(item.productBrand)}","${cleanText(item.productWeight)}","${cleanText(
-            item.productDimension,
-          )}","${cleanText(item.productModalNumber)}","${cleanText(
-            item.productSpecailFeatures,
-          )}","${cleanText(item.productColor)}","${cleanText(item.productSize)}"`
+          return `"${cleanText(item.source)}","${escapeCSVField(
+            cleanText(item.productTitle),
+          )}","${cleanText(item.imageURL)}","${additionalImages}","${descriptions}","${cleanText(
+            item.productAsin,
+          )}","${cleanText(item.productManufacturer)}","${cleanText(
+            item.productBrand,
+          )}","${cleanText(item.productWeight)}","${cleanText(item.productDimension)}","${cleanText(
+            item.productModalNumber,
+          )}","${cleanText(item.productSpecailFeatures)}","${cleanText(
+            item.productColor,
+          )}","${cleanText(item.productSize)}"`
         })
         .join('\n')
 
