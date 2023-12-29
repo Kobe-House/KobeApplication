@@ -241,7 +241,7 @@ const Users = () => {
                                     getSingleUsers(item.user_guid)
                                   }}
                                   icon="mdi:account-eye-outline"
-                                  style={{ fontSize: '24px', color: '#f9b115' }}
+                                  style={{ fontSize: '24px', color: '#303C54' }}
                                 />
                               </CDropdownItem>
                               <CDropdownItem className="text-center">
@@ -249,7 +249,7 @@ const Users = () => {
                                   <span>
                                     <Icon
                                       icon="mdi:account-edit-outline"
-                                      style={{ fontSize: '24px', color: '#f9b115' }}
+                                      style={{ fontSize: '24px', color: '#303C54' }}
                                     />
                                   </span>
                                 </Link>
